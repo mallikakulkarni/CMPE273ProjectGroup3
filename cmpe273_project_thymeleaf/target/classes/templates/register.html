@@ -1,0 +1,30 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Welcom to stickynotes</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1, charset=UTF-8" />
+<link rel="stylesheet" href="../../css/style.css" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<section class="container">
+    <div class="login">
+        <h1>Registration</h1>
+    <form action="#" th:action="@{http://localhost:8080/stickynote/users/}" th:object="${createuser}" method="post">
+            <p><input type="text" th:field="*{email}" placeholder="Username or Email" /></p>
+            <p><input type="password" name="password" id="password" th:field="*{password}" placeholder="Password" /></p>
+            <p><input type="text" name="name" placeholder="name" /></p>
+			
+            <p class="submit"><input type="submit" id="submit" value="Register" /></p>
+            <p class="reset"><input type="reset" name="reset" value="reset" /></p>
+
+        </form>
+    </div>
+
+    <div class="login-help">
+        <p class="register-link">By clicking Register, you agree on our <a href="">Terms and Conditions</a></p>
+    </div>
+</section>
+
+
+</body>
+</html>
