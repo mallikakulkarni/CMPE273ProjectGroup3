@@ -1,0 +1,156 @@
+<!doctype html>
+
+<html>
+<head>
+  <title>core-scaffold</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <script src="../bower_components/webcomponentsjs/webcomponents.js"></script>
+
+  <link rel="import" href="../bower_components/core-scaffold/core-scaffold.html">
+  <link rel="import" href="../bower_components/core-header-panel/core-header-panel.html">
+  <link rel="import" href="../bower_components/core-drawer-panel/core-drawer-panel.html">
+  <link rel="import" href="../bower_components/core-menu/core-menu.html">
+  <link rel="import" href="../bower_components/core-item/core-item.html">
+  <link rel="import" href="../bower_components/paper-input/paper-autogrow-textarea.html">
+  <link rel="import" href="../bower_components/core-icons/core-icons.html">
+  <link rel="import" href="../bower_components/core-toolbar/core-toolbar.html">
+  <link rel="import" href="../bower_components/font-roboto/roboto.html">
+  <link rel="import" href="../bower_components/paper-button/paper-button.html">
+  <link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
+  <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+  <link rel="import" href="../bower_components/paper-fab/paper-fab.html">
+  <link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
+  <link rel="import" href="../bower_components/paper-toast/paper-toast.html">
+
+  <style>
+   html, body {
+      height: 100%;
+      margin: 0;
+    }
+
+    body {
+      overflow: hidden;
+      margin: 0;
+      font-family: RobotoDraft, 'Helvetica Neue', Helvetica, Arial;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      -webkit-tap-highlight-color: rgba(0,0,0,0);
+      -webkit-touch-callout: none;
+    }
+
+    paper-button {
+      margin: 20px;
+    }
+
+    core-scaffold {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+    }
+
+    .content {
+      background-color: #fff;
+      height: 5000px;
+      padding: 20px;
+    }
+
+    /* some default styles for mode="cover" on core-scaffold */
+    core-scaffold[mode=cover]::shadow core-header-panel::shadow #mainContainer {
+      left: 120px;
+    }
+
+    core-scaffold[mode=cover] .content {
+      margin: 20px 100px 20px 0;
+    }
+
+    :host {
+      display: inline-block;
+      position: relative;
+      width: 400px;
+    }
+    .mirror-text {
+      visibility: hidden;
+    }
+    ::content textarea {
+      padding: 0;
+      margin: 0;
+      border: none;
+      outline: none;
+      resize: none;
+      /* see comments in template */
+      width: 100%;
+      height: 100%;
+    }
+    ::content textarea:invalid {
+      box-shadow: none;
+    }
+
+  </style>
+
+</head>
+
+<body unresolved>
+
+  <core-scaffold>
+
+    <core-header-panel navigation flex mode="seamed">
+      <core-toolbar style="background-color: #526E9C; color: #fff;">StickyNotes</core-toolbar>
+      <core-menu>
+        <core-item icon="settings" label="Add a Note"><a href="AddNote.html"></a></core-item>
+        <core-item icon="settings" label="View Notes"></core-item>
+        <core-item icon="settings" label="Delete a note"></core-item>
+      </core-menu>
+    </core-header-panel>
+
+    <span tool>Welcome XYZ</span>
+    <div>
+
+    <core-toolbar class="medium">
+      <paper-icon-button icon="menu"></paper-icon-button>
+      <paper-icon-button icon="search"></paper-icon-button>
+      <paper-icon-button icon="more-vert"></paper-icon-button>
+      <paper-button right raised>
+        <a href="index.html">
+          Home
+        </a>
+      </paper-button>
+    </core-toolbar>
+   </div>
+   <div>
+    <core-toolbar class="medium">
+      Write a New Note
+    </core-toolbar>
+  </div>
+    <textarea rows='40' style='line-height:1; font-size: 50%; width: 50%'></textarea>
+  </div>
+
+
+  <section>
+    <template id="discard" is="auto-binding">
+      <paper-button raised on-click="{{discardNote}}">
+        Discard Note
+      </paper-button>
+      <paper-toast id="toast1" text="Note Discarded"></paper-toast>
+      </template>
+      <template id="write" is="auto-binding">
+      <paper-button raised on-click="{{writeNote}}">
+        Save Note
+      </paper-button>
+      <paper-toast id="toast2" text="Note Saved"></paper-toast>
+    </template>
+  </section>
+
+  <script src="main.js"></script>
+
+
+  </core-scaffold>
+
+</body>
+</html>
