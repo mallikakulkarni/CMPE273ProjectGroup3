@@ -1,0 +1,30 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Welcom to stickynotes</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="../../css/style.css" th:href="@{/css/style.css}"/>
+    
+</head>
+<body>
+<section class="container">
+    <div class="login">
+        <h1>Sticky Notes</h1>
+    <form action="#" th:action="@{http://localhost:8080/stickynote/users/saiganesh.2009@gmail.com/}" method="get">
+            <p><input type="text" id="email" placeholder="Username or Email" /></p>
+            <p><input type="password" name="password" id="password" placeholder="Password" /></p>
+
+            <p class="submit"><input type="submit" id="submit" value="Login" /></p>
+            <p class="reset"><input type="reset" name="reset" value="reset" /></p>
+
+        </form>
+    </div>
+
+    <div class="login-help">
+        <p class="register-link">Not a member yet? <a href="/stickynote/register">Register here</a></p>
+    </div>
+</section>
+
+
+</body>
+</html>
