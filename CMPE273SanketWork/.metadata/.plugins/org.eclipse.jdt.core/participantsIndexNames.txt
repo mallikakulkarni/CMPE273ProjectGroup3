@@ -1,0 +1,5 @@
+INDEX VERSION 1.127
+C:\Users\SANKET\Documents\workspace-sts-3.6.1.RELEASEProject\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\3309128830.index
+\SticyNoteProject\src\main\java
+C:\Users\SANKET\Documents\workspace-sts-3.6.1.RELEASEProject\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\2438611481.index
+\Client\src

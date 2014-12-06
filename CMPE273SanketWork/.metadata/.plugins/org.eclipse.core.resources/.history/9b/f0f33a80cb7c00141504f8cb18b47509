@@ -1,0 +1,52 @@
+package stickynote;
+
+import java.io.FileOutputStream;
+
+import com.dropbox.core.DbxClient;
+import com.dropbox.core.DbxEntry;
+
+public class GetNote {
+
+	String file_nmae = "";
+	String authorizationCode = "";
+	String userid= "";
+	
+	public GetNote()
+	{
+		
+	}
+	
+	public String getUserid() {
+		return userid;
+	}
+	public void setUserid(String userid) {
+		this.userid = userid;
+	}
+	public String getFile_nmae() {
+		return file_nmae;
+	}
+	public void setFile_nmae(String file_nmae) {
+		this.file_nmae = file_nmae;
+	}
+	public String getAuthorizationCode() {
+		return authorizationCode;
+	}
+	public void setAuthorizationCode(String authorizationCode) {
+		this.authorizationCode = authorizationCode;
+	}
+
+	public String getFile(String userid2, DbxClient client) {
+		
+		   FileOutputStream outputStream = new FileOutputStream("xxxxxxAmanFile7.doc");
+	        try {
+	            DbxEntry.File downloadedFile = client.getFile("/AmanFile7.doc", null,
+	                outputStream);
+	            System.out.println("Metadata: " + downloadedFile.toString());
+	        } finally {
+	            outputStream.close();
+	        }
+		
+		return null;
+	}			
+	
+}
