@@ -93,8 +93,8 @@
                     <ul class="sidebar-menu">
                         
                         <li>
-                            <a href="pages/widgets.html">
-                                <i class="fa fa-th"></i> <span>Add New Note</span> 
+                            <a href="#">
+                                <i class="fa fa-th"></i> <span><td><button onclick="processUrlData()" class="btn btn-default">Default</button></td></span> 
                             </a>
                         </li>
                 
@@ -262,6 +262,21 @@
 
         <!-- AdminLTE for demo purposes -->
         <script src="../../js/AdminLTE/demo.js" type="text/javascript"></script>
+        <script>
+        function processUrlData() {
+            $.ajax({
+                type: "GET",
+                url: "http://localhost:8080/stickynote/test",     
+               
+                success: function() {
+                    console.log("testing");
+                },
+                error : function() {
+                    
+                }
+            });
+        }
+        </script>
 
     </body>
 </html>

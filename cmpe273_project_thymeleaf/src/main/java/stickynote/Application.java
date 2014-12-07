@@ -81,6 +81,18 @@ public class Application {
 	   	return "index";
 	 }
 	 
+	 //welcome message
+	 @RequestMapping(value = "/test", method = RequestMethod.GET)
+	 
+	 public String welcomeMessage1()
+	 {
+	   	System.out.println("Welcome to Sticky notes");
+	  // model.addAttribute("createuser",new CreateUser());
+	   
+	   	//model.addAttribute("getUser", new GetUser());
+	   	return "index";
+	 }
+	 
 	 
  @RequestMapping(value = "/register", method = RequestMethod.GET)
 	 
