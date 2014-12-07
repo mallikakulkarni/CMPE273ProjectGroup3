@@ -72,12 +72,12 @@ public class Application {
 	 //welcome message
 	 @RequestMapping(value = "", method = RequestMethod.GET)
 	 
-	 public String welcomeMessage(Model model)
+	 public String welcomeMessage()
 	 {
 	   	System.out.println("Welcome to Sticky notes");
 	  // model.addAttribute("createuser",new CreateUser());
 	   
-	   	model.addAttribute("getUser", new GetUser());
+		
 	   	return "index";
 	 }
 	 
@@ -91,26 +91,6 @@ public class Application {
 	
 	   	return "register";
 	 }
- 
- @RequestMapping(value = "/empty", method = RequestMethod.GET)
- 
- public String emptyForm(Model model)
- {
-   	System.out.println("In register method");
-   model.addAttribute("createuser",new CreateUser());
-
-   	return "empty";
- }
- 
- @RequestMapping(value = "/homepage", method = RequestMethod.GET)
- 
- public String homepageForm(Model model)
- {
-   	System.out.println("In register method");
-   model.addAttribute("createuser",new CreateUser());
-
-   	return "homepage";
- }
 	 
 //	 @RequestMapping(value = "/postm", method = RequestMethod.POST)
 //	 
@@ -126,23 +106,24 @@ public class Application {
 	 
 	 
 	 //Creating user
-	 @RequestMapping(value= "/users", method = RequestMethod.POST)
-	 @ResponseBody 
-	 public ResponseEntity<Object> createUser(@Valid @ModelAttribute CreateUser createuser) throws UnknownHostException
+	 
+ @RequestMapping(value= "/users", method = RequestMethod.POST)
+ public String createUser(@Valid @ModelAttribute CreateUser createuser,Model model) throws UnknownHostException
 	 {
 		 System.out.println("in post");
+		 model.addAttribute("createuser",createuser);
 		 coll =  DBConnection.getConnection();
 		 BasicDBObject query = new BasicDBObject("email", createuser.getEmail()); // for eamil already exist validation
 		 DBCursor cursor = coll.find(query);
 		 try {
 			 	if(cursor.hasNext())
 			 	{	System.out.println(createuser.getEmail());
-			 		return new ResponseEntity<Object>(new Error(createuser.getEmail()),HttpStatus.BAD_REQUEST);
+			 		return "get";
 			 	}else{    		
 				 doc = new BasicDBObject("userid", createuser.getUserid()).append("email", createuser.getEmail()).append("password", createuser.getPassword()).append("created_at", createuser.getCreated_at()).append("updated_at", createuser.getUpdated_at());
 				 coll.insert(doc);
 				 System.out.println("inserted");
-				 return new ResponseEntity<Object>(createuser, HttpStatus.CREATED);
+				 return "get";
 			 	}
 			 }
 		 finally {cursor.close();}  	
@@ -161,8 +142,8 @@ public class Application {
 	 
 	 
 
-	 //Creating user
-//	 @RequestMapping(value= "/users", consumes="application/json", method = RequestMethod.POST)
+	// Creating user
+//	 @RequestMapping(value= "/users", method = RequestMethod.POST)
 //	 @ResponseBody
 //	 public ResponseEntity<Object> createUser(@Valid @RequestBody CreateUser user) throws UnknownHostException
 //	 {
@@ -181,46 +162,44 @@ public class Application {
 //			 }
 //		 finally {cursor.close();}  	
 //	  }
-	  /*
+	  
 	 //get user details
-	 @RequestMapping(value ="/users/{userid}", method = RequestMethod.GET)
-	 @ResponseBody
-	 public ResponseEntity<Object> getUser(@PathVariable String userid) throws UnknownHostException
-	 {
-	    coll =  DBConnection.getConnection();
-	    BasicDBObject query = new BasicDBObject("userid", userid);
-	    DBCursor cursor = coll.find(query);
-	    try {
-	    		if(cursor.hasNext())
-	    		{	GetUser getUser = new GetUser(cursor);
-	    			return new ResponseEntity<Object>(getUser, HttpStatus.OK);
-	    		}
-	    		else{
-	    		return new ResponseEntity<Object>(new Error(userid), HttpStatus.BAD_REQUEST);
-	    		}
-	    	}
-	    finally{cursor.close();}
-	 }
+//	 @RequestMapping(value ="/users/{userid}", method = RequestMethod.GET)
+//	 @ResponseBody
+//	 public ResponseEntity<Object> getUser(@PathVariable String userid) throws UnknownHostException
+//	 {
+//	    coll =  DBConnection.getConnection();
+//	    BasicDBObject query = new BasicDBObject("userid", userid);
+//	    DBCursor cursor = coll.find(query);
+//	    try {
+//	    		if(cursor.hasNext())
+//	    		{	GetUser getUser = new GetUser(cursor);
+//	    			return new ResponseEntity<Object>(getUser, HttpStatus.OK);
+//	    		}
+//	    		else{
+//	    		return new ResponseEntity<Object>(new Error(userid), HttpStatus.BAD_REQUEST);
+//	    		}
+//	    	}
+//	    finally{cursor.close();}
+//	 }
 	        
-	 */
 	 
-	 @RequestMapping(value ="/users/email", method = RequestMethod.GET)
-	 @ResponseBody
-	 public ResponseEntity<Object> getUser(@ModelAttribute GetUser getuser) throws UnknownHostException
+	 
+	 @RequestMapping(value ="/users/{email}/", method = RequestMethod.GET)
+	 public String getUser(@PathVariable String email,Model model) throws UnknownHostException
 	 {
 	    coll =  DBConnection.getConnection();
-	    BasicDBObject query = new BasicDBObject("email", getuser.email);
-	    System.out.println("email entered is "+getuser.email);
+	    BasicDBObject query = new BasicDBObject("email", email);
+	    System.out.println("email entered is "+email);
 	    DBCursor cursor = coll.find(query);
-	    cursor=dbcursor;
 	    try {
 	    		if(cursor.hasNext())
 	    		{	GetUser getUser = new GetUser(cursor);
-	    			
-	    			return new ResponseEntity<Object>(getUser, HttpStatus.OK);
+	    			model.addAttribute("getUser", getUser);
+	    			return "homepage";
 	    		}
 	    		else{
-	    		return new ResponseEntity<Object>(new Error(getuser.email), HttpStatus.BAD_REQUEST);
+	    		return "No such user";
 	    		}
 	    	}
 	    finally{cursor.close();}

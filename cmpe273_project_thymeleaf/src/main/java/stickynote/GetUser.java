@@ -20,11 +20,7 @@ public class GetUser {
 		this.setCreated_at(obj.get("created_at").toString());
 		this.setUpdated_at(obj.get("updated_at").toString());
 	}
-	public GetUser()
-	{
 	
-	
-	}
 	public String getUpdated_at() {
 		return updated_at;
 	}
