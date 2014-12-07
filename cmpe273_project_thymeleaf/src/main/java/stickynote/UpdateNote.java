@@ -5,28 +5,44 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import org.hibernate.validator.constraints.NotEmpty;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
+
 import com.dropbox.core.DbxClient;
 import com.dropbox.core.DbxEntry;
 import com.dropbox.core.DbxException;
 import com.dropbox.core.DbxWriteMode;
 
-public class CreateNote {
+public class UpdateNote {
 	
-	public CreateNote()
+	public UpdateNote()
 	{
+		this.setUpdate_time();
 	}
-
-	@NotEmpty (message = "Please enter file_name")
-	String file_name="";
-	String userid ="";
-	String file_data="";
 	
-	public String getFile_data() {
-		return file_data;
+	String update_time ="";
+	String create_time ="";
+	String userid ="";
+	String file_name ="";
+	String file_data ="";
+	
+	public String getUpdate_time() {
+		return update_time;
 	}
-	public void setFile_data(String file_data) {
-		this.file_data = file_data;
+	
+	public void setUpdate_time() {
+		TimeZone tz = TimeZone.getTimeZone("UTC");
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T':HH:mm:ss'Z'");
+		df.setTimeZone(tz);
+		this.update_time = df.format(new Date());
+	}
+	public String getCreate_time() {
+		return create_time;
+	}
+	public void setCreate_time(String create_time) {
+		this.create_time = create_time;
 	}
 	public String getUserid() {
 		return userid;
@@ -40,9 +56,20 @@ public class CreateNote {
 	public void setFile_name(String file_name) {
 		this.file_name = file_name;
 	}
-	
-	public String createFile(String userid,DbxClient client) throws DbxException
-	{
+	public String getFile_data() {
+		return file_data;
+	}
+	public void setFile_data(String file_data) {
+		this.file_data = file_data;
+	}
+
+
+	public String updateFile(String userid, DbxClient client, String file_name) throws DbxException {
+		
+		this.setUserid(userid);
+		
+		// CREATE TIME WILL COME FROM DB
+		
 		
 		try{
 		File fileDir = new File("./UserNote/"+userid);
@@ -52,8 +79,7 @@ public class CreateNote {
 		}
 		
 		File file = new File("./UserNote/"+userid+"/"+file_name+".doc");
-		if(!(file.exists()))
-		{
+		
 			file.createNewFile();
 			FileWriter fw = new FileWriter(file.getAbsoluteFile());
 			BufferedWriter bw = new BufferedWriter(fw);
@@ -82,16 +108,11 @@ public class CreateNote {
 		        
 			return "created";
 		}
-		else
-		{
-			return "file already exist";}
-		}
 		catch(IOException e)
 		{
 			return e.toString();
 		}
 		
-	}
-	
-	
+	}		
+
 }

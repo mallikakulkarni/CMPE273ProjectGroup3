@@ -14,22 +14,16 @@ public class GetNote {
 
 	String file_name = "";
 	String userid= "";
-	String title = "";
-	String note_data = "";
+	String file_data= "";
 	
 	
-	public String getTitle() {
-		return title;
+	public String getFile_data() {
+		return file_data;
 	}
-	public void setTitle(String title) {
-		this.title = title;
+	public void setFile_data(String file_data) {
+		this.file_data = file_data;
 	}
-	public String getNote_data() {
-		return note_data;
-	}
-	public void setNote_data(String note_data) {
-		this.note_data = note_data;
-	}
+
 	public String getUserid() {
 		return userid;
 	}
@@ -57,7 +51,7 @@ public class GetNote {
 			
 			    DbxEntry.File downloadedFile = client.getFile("/"+this.getFile_name()+".doc", null,
 	                outputStream);
-	            //System.out.println("Metadata: " + downloadedFile.toString());			    
+	            			    
 			    return "success";
 	        }
 	        catch(Exception e)
@@ -80,21 +74,13 @@ public class GetNote {
 			String sCurrentLine;
 			
 			br = new BufferedReader(new FileReader("./DownloadedNote/"+userid+"/"+this.getFile_name()+".doc"));
-			int count = 0;
-			while ((sCurrentLine = br.readLine()) != null) {
-				if(count == 0)
-				{
-				this.setTitle(sCurrentLine);
-				count++;
-				}
-				else
-				{
-				note_data = note_data +"\n"+ sCurrentLine;
-				}
+			while ((sCurrentLine = br.readLine()) != null) 
+			{				
+				file_data = file_data +"\n"+ sCurrentLine;
 			}
 			
-			this.setNote_data(note_data);
-			return note_data;
+			this.setFile_data(file_data);
+			return "success";
 			} 
 			catch (IOException e) 
 			{

@@ -1,6 +1,5 @@
 package stickynote;
-//
-//
+
 import java.io.File;
 import java.io.IOException;
 import java.net.UnknownHostException;
@@ -114,29 +113,8 @@ public class Application {
 	    	}
 	    finally{cursor.close();}
 	 }
-	    
-	 
-	 /*
-	 @RequestMapping(value ="/users/{email}/", method = RequestMethod.GET)
-	 @ResponseBody
-	 public ResponseEntity<Object> getUser(@PathVariable String email) throws UnknownHostException
-	 {
-	    coll =  DBConnection.getConnection();
-	    BasicDBObject query = new BasicDBObject("email", email);
-	    System.out.println("email entered is "+email);
-	    DBCursor cursor = coll.find(query);
-	    try {
-	    		if(cursor.hasNext())
-	    		{	GetUser getUser = new GetUser(cursor);
-	    			return new ResponseEntity<Object>(getUser, HttpStatus.OK);
-	    		}
-	    		else{
-	    		return new ResponseEntity<Object>(new Error(email), HttpStatus.BAD_REQUEST);
-	    		}
-	    	}
-	    finally{cursor.close();}
-	 }*/
-	 
+	   
+	 //Update User Details
 	 @RequestMapping(value ="/users/{userid}", method = RequestMethod.PUT)
 	 @ResponseBody
 	 public ResponseEntity<Object> updateUser(@PathVariable String userid,@Valid @RequestBody UpdateUser updateUser) 
@@ -149,14 +127,15 @@ public class Application {
 	    try {
 	    		if(cursor.hasNext())
 	    		{
-	    			GetUser user = new GetUser(cursor);
+	    			//GetUser user = new GetUser(cursor);
 	    			BasicDBObject update = new BasicDBObject();
 	    			update.put("$set", new BasicDBObject("email",updateUser.getEmail())
-	    					.append("password", updateUser.getPassword()));
+	    					.append("password", updateUser.getPassword()).append("name", updateUser.getName()).append("contactNumber", updateUser.getContactNumber()));
 	    		 	coll.update(query,update);
-	    		 	user.setEmail(updateUser.getEmail());
-	    		 	user.setPassword(updateUser.getPassword());
-	    			return new ResponseEntity<Object>(user, HttpStatus.OK);
+	    		 	updateUser.setUserid(userid);
+	    		 	//user.setEmail(updateUser.getEmail());
+	    		 	//user.setPassword(updateUser.getPassword());
+	    			return new ResponseEntity<Object>(updateUser, HttpStatus.OK);
 	    		}
 	    		else{
 	    		return new ResponseEntity<Object>(new Error(userid), HttpStatus.BAD_REQUEST);
@@ -165,6 +144,7 @@ public class Application {
 	    finally{cursor.close();}
 	 }
 	 
+	 //Deleting user
 	 @RequestMapping(value ="/users/{userid}", method = RequestMethod.DELETE)
 	 @ResponseBody
 	 public ResponseEntity<Object> deleteUser(@PathVariable String userid) 
@@ -227,9 +207,8 @@ public class Application {
 		  				 CreateClientObject cc = new CreateClientObject();
 	    				 try{
 	    			        client = cc.getClientObject(authorizationCode, webAuth, config);
-	    			        //System.out.println(createNote.getAuthorizationCode());
 	    			        clientDropboxInfo.put(userid, client);
-	    			        return new ResponseEntity<Object>("User Authorized", HttpStatus.OK);
+	    			        return new ResponseEntity<Object>(new Success("User Authorized"), HttpStatus.OK);
 	    			        
 	    				 }catch(Exception e)
 	    				 {
@@ -244,7 +223,7 @@ public class Application {
 	    			        //System.out.println(createNote.getAuthorizationCode());
 	    			        clientDropboxInfo.remove(userid);
 	    			        clientDropboxInfo.put(userid, client);
-	    			        return new ResponseEntity<Object>("User Authorization Updated", HttpStatus.OK);
+	    			        return new ResponseEntity<Object>(new Success("User Authorization Updated"), HttpStatus.OK);
 	    			        
 	    				 }catch(Exception e)
 	    				 {
@@ -283,34 +262,7 @@ public class Application {
 	    		{	
 	    			 if(!(clientDropboxInfo.containsKey(userid)))
 	    			 {
-	    				if(!(createNote.getAuthorizationCode().equals("")))
-	 	    		 	{
-	    				 CreateClientObject cc = new CreateClientObject();
-	    				 try{
-	    			        client = cc.getClientObject(createNote.getAuthorizationCode(), webAuth, config);
-	    			        //System.out.println(createNote.getAuthorizationCode());
-	    			        clientDropboxInfo.put(userid, client);
-	    				 }catch(Exception e)
-	    				 {
-	    					 return new ResponseEntity<Object>(new Error(e.getMessage(), "Update authorizationCode Go to url"+ authorizeUrl), HttpStatus.BAD_REQUEST);
-	    				 }
-	    			      //  System.out.println("Linked account: " + client.getAccountInfo().displayName);
-	    			 
-	    				createNote.setUserid(userid);
-	    			 	String response = createNote.createFile(userid,(DbxClient)clientDropboxInfo.get(userid));
-	    			 	if(response.equals("created"))
-	    			 	{	
-	    				 return new ResponseEntity<Object>(createNote, HttpStatus.CREATED);
-	    			 	}
-	    			 	else
-	    			 	{
-	    			     return new ResponseEntity<Object>(new Error(response,1), HttpStatus.BAD_REQUEST);
-	    			 	}
-	    			  	}
-	    				else
-	  	    		  	{
-	  	    			return new ResponseEntity<Object>(new Error(authorizeUrl,2), HttpStatus.OK);
-	  	    		  	}
+	    			     return new ResponseEntity<Object>(new Error("User is not Authorized with Dropbox. Go to Settings and authorize user.",1), HttpStatus.BAD_REQUEST);
 	    			 }
 	    			 else
 	    			 {
@@ -345,54 +297,152 @@ public class Application {
 	 
 		 
 	 
-	//get all user notes List 
-		 @RequestMapping(value ="/users/{userid}/note/{file_name}", method = RequestMethod.GET)
-		 @ResponseBody
-		 public ResponseEntity<Object> getNote(@PathVariable String userid, @PathVariable String file_name) throws IOException, UnknownHostException
-		 {
-		    coll =  DBConnection.getConnection();
-		    BasicDBObject query = new BasicDBObject("userid", userid);
-		    DBCursor cursor = coll.find(query);
-		    try {
-		    	if(cursor.hasNext())
-	    		  {	
-	    			 if(!(clientDropboxInfo.containsKey(userid)))
-	    			 {
-	    				 return new ResponseEntity<Object>(new Error(authorizeUrl, 1), HttpStatus.BAD_REQUEST);
-	    			 }
-	    			 else
-	    			 {
-	    				 GetNote getNote = new GetNote();
-	    				 getNote.setFile_name(file_name);
-	    				 getNote.setUserid(userid);
-	    				 String response = getNote.getFile(userid, (DbxClient)clientDropboxInfo.get(userid));
-		    			 if(response.equals("success"))
-		    			 {
-		    				 Object file_data = getNote.readFile(file_name);
-		    				 File f = new File("./DownloadedNote/"+userid+"/"+file_name+".doc");
-		    				 if(f.exists())
-		    				 {
-		    					 f.delete();
-		    				 }
-		    				 return new ResponseEntity<Object>(getNote, HttpStatus.OK);
+	//get particular note 
+	@RequestMapping(value ="/users/{userid}/note/{file_name}", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<Object> getNote(@PathVariable String userid, @PathVariable String file_name) throws IOException, UnknownHostException
+	{
+		  coll =  DBConnection.getConnection();
+		  BasicDBObject query = new BasicDBObject("userid", userid);
+		  DBCursor cursor = coll.find(query);
+		  try{
+		    if(cursor.hasNext())
+	    	 {	
+	    		 if(!(clientDropboxInfo.containsKey(userid)))
+	    		 {
+	    			 return new ResponseEntity<Object>(new Error("User is not Authorized with Dropbox. Go to Settings and authorize user.",1), HttpStatus.BAD_REQUEST);
+	    		 }
+	    		else
+	    		{
+	    			GetNote getNote = new GetNote();
+	    			getNote.setFile_name(file_name);
+	    			getNote.setUserid(userid);
+	    			String response = getNote.getFile(userid, (DbxClient)clientDropboxInfo.get(userid));
+		    		if(response.equals("success"))
+		    		{
+		    			String res = getNote.readFile(file_name);
+		    			if(res.equals("success"))
+		    			{
+		    			File f = new File("./DownloadedNote/"+userid+"/"+file_name+".doc");
+		    			if(f.exists())
+		    			{
+		    				f.delete();
+		    			}
+		    			 return new ResponseEntity<Object>(getNote, HttpStatus.OK);
+		    			}
+		    			else
+		    			{
+		    			return new ResponseEntity<Object>(new Error(res,1), HttpStatus.BAD_REQUEST);
+		    			}
+		    		}
+		    		else
+		    		{
+		    			 return new ResponseEntity<Object>(new Error(response,1), HttpStatus.BAD_REQUEST);
+		    		}
+	    		}
+		    }
+			else
+			{
+				return new ResponseEntity<Object>(new Error(userid), HttpStatus.BAD_REQUEST);
+			}
+		   }
+		   finally
+		   {cursor.close();}
+	}
+	
+	//Update note 
+	@RequestMapping(value ="/users/{userid}/note/{file_name}", method = RequestMethod.PUT)
+	@ResponseBody
+	public ResponseEntity<Object> updateNote(@PathVariable String userid, @PathVariable String file_name, @RequestBody UpdateNote updateNote) throws IOException, UnknownHostException, DbxException
+		{
+			coll =  DBConnection.getConnection();
+			BasicDBObject query = new BasicDBObject("userid", userid);
+			DBCursor cursor = coll.find(query);
+			try{
+			 if(cursor.hasNext())
+		     {	
+				if(!(clientDropboxInfo.containsKey(userid)))
+		    	{
+				 return new ResponseEntity<Object>(new Error("User is not Authorized with Dropbox. Go to Settings and authorize user.",1), HttpStatus.BAD_REQUEST);
+		    	}
+		    	else
+		    	{
+		    		
+		    		DbxClient client = (DbxClient)clientDropboxInfo.get(userid);
+		    		DeleteNote deleteNote = new DeleteNote();
+		    		String res = deleteNote.deleteNoteAction(client, file_name, userid);
+		    		if(res.equals("success"))
+		    		{
+		    			 String response = updateNote.updateFile(userid,client,file_name);
+		    			 if(response.equals("created"))
+		    			 {	
+		    				 return new ResponseEntity<Object>(updateNote, HttpStatus.CREATED);
 		    			 }
 		    			 else
 		    			 {
-		    				 return new ResponseEntity<Object>(new Error(response), HttpStatus.BAD_REQUEST);
+		    			     return new ResponseEntity<Object>(new Error(response,1), HttpStatus.BAD_REQUEST);
 		    			 }
-	    			 }
-		    	
+		    			
 		    		}
-	    		  
-				else{
-		    		return new ResponseEntity<Object>(new Error(userid), HttpStatus.BAD_REQUEST);
+		    		else
+		    		{
+		    			return new ResponseEntity<Object>(new Error(res,1), HttpStatus.BAD_REQUEST);
 		    		}
-	    		  }
-		    finally{cursor.close();}
-		 }
-		   
-	 
-			 
+		    				    		
+			    }
+		     }
+			else
+			{
+				return new ResponseEntity<Object>(new Error(userid), HttpStatus.BAD_REQUEST);
+			}
+			}
+			finally
+			{cursor.close();}
+		}
+	
+	
+	//Delete note 
+	@RequestMapping(value ="/users/{userid}/note/{file_name}", method = RequestMethod.DELETE)
+	@ResponseBody
+	public ResponseEntity<Object> deleteNote(@PathVariable String userid, @PathVariable String file_name) throws IOException, UnknownHostException
+		{
+			coll =  DBConnection.getConnection();
+			BasicDBObject query = new BasicDBObject("userid", userid);
+			DBCursor cursor = coll.find(query);
+			try{
+			 if(cursor.hasNext())
+		     {	
+				if(!(clientDropboxInfo.containsKey(userid)))
+		    	{
+				 return new ResponseEntity<Object>(new Error("User is not Authorized with Dropbox. Go to Settings and authorize user.",1), HttpStatus.BAD_REQUEST);
+		    	}
+		    	else
+		    	{
+		    		
+		    		DbxClient client = (DbxClient)clientDropboxInfo.get(userid);
+		    		DeleteNote deleteNote = new DeleteNote();
+		    		String res = deleteNote.deleteNoteAction(client, file_name, userid);
+		    		if(res.equals("success"))
+		    		{
+		    			return new ResponseEntity<Object>(new Success(file_name+ " successfully deleted..!!"), HttpStatus.OK);
+		    		}
+		    		else
+		    		{
+		    			return new ResponseEntity<Object>(new Error(res,1), HttpStatus.BAD_REQUEST);
+		    		}
+		    				    		
+			    }
+		     }
+			else
+			{
+				return new ResponseEntity<Object>(new Error(userid), HttpStatus.BAD_REQUEST);
+			}
+			}
+			finally
+			{cursor.close();}
+		}
+			
+	
 	 //handling exceptions
 	 @ExceptionHandler({MethodArgumentNotValidException.class, ServletRequestBindingException.class})
 	 @ResponseStatus(HttpStatus.BAD_REQUEST)
