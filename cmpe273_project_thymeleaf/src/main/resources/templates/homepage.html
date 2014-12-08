@@ -280,7 +280,7 @@
                 var file_data = $('#note_text_area').val();
                 var json = { "file_name" : file_name, "userid" : userid, "file_data": file_data};
                 $.ajax({
-                    url: "http://localhost:8080/stickynote/users/addnote",
+                    url: "./users/addnote",
                     data: JSON.stringify(json),
                     type: "POST",
                     
