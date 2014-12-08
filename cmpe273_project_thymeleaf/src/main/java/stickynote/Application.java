@@ -458,4 +458,35 @@ public class Application {
 		}
 		return errorMapping;
      }
+	//twilio
+	 @RequestMapping(value= "/sendTextMessage", method = RequestMethod.POST)
+	 @ResponseBody
+	 public ResponseEntity<Object> sendTextMessage(@Valid @RequestBody SendMessage message) throws UnknownHostException
+	 {
+		Boolean sendSuccess = MessageManager.sendMessage(message.getTitle());
+		 if(!sendSuccess){
+		 	return new ResponseEntity<Object>("fail to send text message", HttpStatus.BAD_REQUEST);
+
+		 }
+	    	
+	 		return new ResponseEntity<Object>(HttpStatus.OK);	
+	    		
+	  }
+	  
+
+	  //Send email message
+	 @RequestMapping(value= "/sendEmail", method = RequestMethod.POST)
+	 @ResponseBody
+	 public ResponseEntity<Object> sendEmail(@Valid @RequestBody SendMessage message) throws UnknownHostException
+	 {
+		Boolean sendSuccess = MessageManager.sendEmail(message.getTitle());
+		 if(!sendSuccess){
+		 	return new ResponseEntity<Object>("fail to send email", HttpStatus.BAD_REQUEST);
+
+		 }
+	    	
+	 		return new ResponseEntity<Object>(HttpStatus.OK);
+	    		
+	  }
+	  
 }
