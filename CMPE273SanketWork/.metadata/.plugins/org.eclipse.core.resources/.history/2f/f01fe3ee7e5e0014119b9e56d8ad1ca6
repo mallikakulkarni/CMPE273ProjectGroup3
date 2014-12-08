@@ -1,0 +1,12 @@
+package stickynote;
+
+public class Test implements Pizza {
+
+	Pizza p;
+	
+	Pizza orderPizza(String type)
+	{
+		pizza = new Test();
+		return pizza;
+	}
+}

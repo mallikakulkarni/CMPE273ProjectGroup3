@@ -1,0 +1,6 @@
+package stickynote;
+
+public interface Pizza {
+
+	public void message();
+}
