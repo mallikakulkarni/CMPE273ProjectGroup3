@@ -20,15 +20,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.ServletRequestBindingException;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.dropbox.core.DbxAppInfo;
 import com.dropbox.core.DbxClient;
@@ -66,7 +58,7 @@ public class Application {
 	 {
 		//new DBConnection();
 		 System.out.println("in main");
-	    SpringApplication.run(Application.class, args);
+   	    SpringApplication.run(Application.class, args);
 	 }
 	  
 	 //welcome message
@@ -183,15 +175,35 @@ public class Application {
 //	    finally{cursor.close();}
 //	 }
 	        
+
+    @RequestMapping(value="/users/{email}/settings", method = RequestMethod.GET)
+    public String getSettings(@PathVariable String email,Model model) throws UnknownHostException
+    {
+        coll =  DBConnection.getConnection();
+        BasicDBObject query = new BasicDBObject("email", email);
+        System.out.println("email entered is "+email);
+        DBCursor cursor = coll.find(query);
+        try {
+            if (cursor.hasNext()) {
+                GetUser getUser = new GetUser(cursor);
+                model.addAttribute("getUser", getUser);
+                return "settings";
+            } else {
+                return "No such user";
+            }
+        }
+        finally{cursor.close();}
+    }
 	 
-	 
-	 @RequestMapping(value ="/users/{email}/", method = RequestMethod.GET)
-	 public String getUser(@PathVariable String email,Model model) throws UnknownHostException
+	 @RequestMapping(value ="/users/homepage", method = RequestMethod.GET)
+	 public String getUser(@RequestParam String useremail,Model model) throws UnknownHostException
 	 {
 	    coll =  DBConnection.getConnection();
-	    BasicDBObject query = new BasicDBObject("email", email);
-	    System.out.println("email entered is "+email);
+	    BasicDBObject query = new BasicDBObject("email", useremail);
+	    System.out.println("email entered is "+useremail);
 	    DBCursor cursor = coll.find(query);
+         System.out.println(cursor);
+         System.out.println(query);
 	    try {
 	    		if(cursor.hasNext())
 	    		{	GetUser getUser = new GetUser(cursor);
@@ -199,39 +211,42 @@ public class Application {
 	    			return "homepage";
 	    		}
 	    		else{
-	    		return "No such user";
+	    		return "nosuchuser";
 	    		}
 	    	}
 	    finally{cursor.close();}
 	 }
-	 
-	 @RequestMapping(value ="/users/{userid}", method = RequestMethod.PUT)
-	 @ResponseBody
-	 public ResponseEntity<Object> updateUser(@PathVariable String userid,@Valid @RequestBody UpdateUser updateUser) 
-			 
-			 throws UnknownHostException
-	 {
-	    coll =  DBConnection.getConnection();
-	    BasicDBObject query = new BasicDBObject("userid", userid);
-	    DBCursor cursor = coll.find(query);
-	    try {
-	    		if(cursor.hasNext())
-	    		{
-	    			GetUser user = new GetUser(cursor);
-	    			BasicDBObject update = new BasicDBObject();
-	    			update.put("$set", new BasicDBObject("email",updateUser.getEmail())
-	    					.append("password", updateUser.getPassword()));
-	    		 	coll.update(query,update);
-	    		 	user.setEmail(updateUser.getEmail());
-	    		 	user.setPassword(updateUser.getPassword());
-	    			return new ResponseEntity<Object>(user, HttpStatus.OK);
-	    		}
-	    		else{
-	    		return new ResponseEntity<Object>(new Error(userid), HttpStatus.BAD_REQUEST);
-	    		}
-	    	}
-	    finally{cursor.close();}
-	 }
+
+
+
+    @RequestMapping(value ="/users/{userid}", method = RequestMethod.PUT)
+    @ResponseBody
+    public ResponseEntity<Object> updateUser(@PathVariable String userid,@Valid @RequestBody UpdateUser updateUser)
+
+            throws UnknownHostException
+    {
+        coll =  DBConnection.getConnection();
+        BasicDBObject query = new BasicDBObject("userid", userid);
+        DBCursor cursor = coll.find(query);
+        try {
+            if(cursor.hasNext())
+            {
+                //GetUser user = new GetUser(cursor);
+                BasicDBObject update = new BasicDBObject();
+                update.put("$set", new BasicDBObject("email",updateUser.getEmail())
+                        .append("password", updateUser.getPassword()).append("name", updateUser.getName()).append("contactNumber", updateUser.getContactNumber()));
+                coll.update(query,update);
+                updateUser.setUserid(userid);
+                //user.setEmail(updateUser.getEmail());
+                //user.setPassword(updateUser.getPassword());
+                return new ResponseEntity<Object>(updateUser, HttpStatus.OK);
+            }
+            else{
+                return new ResponseEntity<Object>(new Error(userid), HttpStatus.BAD_REQUEST);
+            }
+        }
+        finally{cursor.close();}
+    }
 	 
 	 @RequestMapping(value ="/users/{userid}", method = RequestMethod.DELETE)
 	 @ResponseBody

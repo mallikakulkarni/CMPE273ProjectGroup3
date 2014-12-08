@@ -1,52 +1,62 @@
 package stickynote;
 
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotEmpty;
+
 
 public class UpdateUser {
-	
-	String userid;
-	String email;
-	String password;
-	String created_at;
-	String updated_at;
 
-	public String getUserid() {
-		return userid;
-	}
+    String userid="";
+    @NotEmpty (message = "Please enter name")
+    String name="";
+    @Email (message = "Email format is not valid")
+    @NotEmpty (message = "Please enter email id")
+    String email="";
+    @NotEmpty (message = "Please enter contact number")
+    String contactNumber = "";
+    @NotEmpty (message = "Please enter password")
+    String password="";
 
-	public void setUserid(String userid) {
-		this.userid = userid;
-	}
 
-	public String getEmail() {
-		return email;
-	}
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public String getPassword() {
-		return password;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
+    public String getContactNumber() {
+        return contactNumber;
+    }
 
-	public String getCreated_at() {
-		return created_at;
-	}
+    public void setContactNumber(String contactNumber) {
+        this.contactNumber = contactNumber;
+    }
 
-	public void setCreated_at(String created_at) {
-		this.created_at = created_at;
-	}
+    public String getUserid() {
+        return userid;
+    }
 
-	public String getUpdated_at() {
-		return updated_at;
-	}
+    public void setUserid(String userid) {
+        this.userid = userid;
+    }
 
-	public void setUpdated_at(String updated_at) {
-		this.updated_at = updated_at;
-	}
-	
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
 }
