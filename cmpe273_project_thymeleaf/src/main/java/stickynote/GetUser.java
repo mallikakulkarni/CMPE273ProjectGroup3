@@ -22,8 +22,6 @@ public class GetUser {
 	}
 	public GetUser()
 	{
-	
-	
 	}
 	public String getUpdated_at() {
 		return updated_at;

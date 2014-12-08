@@ -20,7 +20,7 @@
 		
         <div class="form-box" id="login-box">
             <div class="header">Register New Membership</div>
-            <form action="#" th:action="@{stickynote/users/}" th:object="${createuser}" method="post">
+            <form action="#" th:action="@{http://localhost:8080/stickynote/users}" th:object="${createuser}" method="post">
                 <div class="body bg-gray">
                     <div class="form-group">
                     <p><input type="text" th:field="*{email}" placeholder="Username or Email" class="form-control"/></p>         

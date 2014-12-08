@@ -5,13 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.TimeZone;
-
 import org.hibernate.validator.constraints.NotEmpty;
-
 import com.dropbox.core.DbxClient;
 import com.dropbox.core.DbxEntry;
 import com.dropbox.core.DbxException;
@@ -21,23 +15,18 @@ public class CreateNote {
 	
 	public CreateNote()
 	{
-		this.setCreated_at();
 	}
 
 	@NotEmpty (message = "Please enter file_name")
 	String file_name="";
-	@NotEmpty (message = "Please enter file_title")
-	String file_title="";
-	String created_at="";
 	String userid ="";
+	String file_data="";
 	
-	String authorizationCode ="";
-	
-	public String getAuthorizationCode() {
-		return authorizationCode;
+	public String getFile_data() {
+		return file_data;
 	}
-	public void setAuthorizationCode(String authorizationCode) {
-		this.authorizationCode = authorizationCode;
+	public void setFile_data(String file_data) {
+		this.file_data = file_data;
 	}
 	public String getUserid() {
 		return userid;
@@ -51,21 +40,6 @@ public class CreateNote {
 	public void setFile_name(String file_name) {
 		this.file_name = file_name;
 	}
-	public String getFile_title() {
-		return file_title;
-	}
-	public void setFile_title(String file_title) {
-		this.file_title = file_title;
-	}
-	public String getCreated_at() {
-		return created_at;
-	}
-	public void setCreated_at() {
-		TimeZone tz = TimeZone.getTimeZone("UTC");
-		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T':HH:mm:ss'Z'");
-		df.setTimeZone(tz);
-		this.created_at = df.format(new Date());
-	}
 	
 	public String createFile(String userid,DbxClient client) throws DbxException
 	{
@@ -77,23 +51,31 @@ public class CreateNote {
 			fileDir.mkdirs();
 		}
 		
-		File file = new File("./UserNote/"+userid+"/"+file_name);
+		File file = new File("./UserNote/"+userid+"/"+file_name+".doc");
 		if(!(file.exists()))
 		{
 			file.createNewFile();
 			FileWriter fw = new FileWriter(file.getAbsoluteFile());
 			BufferedWriter bw = new BufferedWriter(fw);
-			bw.write("Title: "+file_title);
+			bw.write("Title: "+file_name);
+			bw.write("\n");
+			bw.write("============================================================================================================================");
+			bw.write("\n");
+			bw.write("\n");
+			bw.write(file_data);
+			bw.write("\n");
+			bw.write("\n");
+			bw.write("============================================================================================================================");
 			bw.close();
 			
-			  File inputFile = new File("./UserNote/"+userid+"/"+file_name);
+			  File inputFile = new File("./UserNote/"+userid+"/"+file_name+".doc");
 		       // inputFile.createNewFile();
 		        FileInputStream inputStream = new FileInputStream(inputFile);
 		        
 		        try {
-		            DbxEntry.File uploadedFile = client.uploadFile("/"+file_name,
+		            DbxEntry.File uploadedFile = client.uploadFile("/"+file_name+".doc",
 		                DbxWriteMode.add(), inputFile.length(), inputStream);
-		            System.out.println("Uploaded: " + uploadedFile.toString());
+		            
 		        } finally {
 		            inputStream.close();
 		        }

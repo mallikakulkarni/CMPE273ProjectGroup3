@@ -13,22 +13,39 @@ public class CreateUser {
 	String userid = "";
 	@Email (message = "Email format is not valid")	//Email format validation
 	@NotEmpty (message = "Please enter email id")	//Email should not empty
-	String email;
+	String email="";
 	@NotEmpty (message = "Please enter password")   //password should not empty
 	String password="";
 	String created_at ="";
-	String updated_at ="";
-
+	@NotEmpty (message = "Please enter name")  
+	String name = "";
+	@NotEmpty (message = "Please enter contact number")  
+	String contactNumber = "";
 	
 	public CreateUser()
 	{
-		System.out.println("yessss it is calling");
+		//System.out.println("yessss it is calling");
 		
 		this.setUserid();
 		this.setCreated_at();	
-		this.setUpdated_at();
 	}
-	
+		
+	public String getContactNumber() {
+		return contactNumber;
+	}
+
+	public void setContactNumber(String contactNumber) {
+		this.contactNumber = contactNumber;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	public String getUserid() {
 		return userid;
 	}
@@ -61,24 +78,16 @@ public class CreateUser {
 		return created_at;
 	}
 	
+	public String getUpdated_at() {
+		return created_at;
+	}
+	
 	//Set current time
 	public void setCreated_at() {
 		TimeZone tz = TimeZone.getTimeZone("UTC");
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T':HH:mm:ss'Z'");
 		df.setTimeZone(tz);
 		this.created_at = df.format(new Date());
-	}	
-	
-	public String getUpdated_at() {
-		return updated_at;
-	}
-	
-	//Set initial update time
-	public void setUpdated_at() {
-		TimeZone tz = TimeZone.getTimeZone("UTC");
-		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T':HH:mm:ss'Z'");
-		df.setTimeZone(tz);
-		this.updated_at = df.format(new Date());
 	}
 	
 }

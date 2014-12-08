@@ -1,13 +1,39 @@
 package stickynote;
 
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotEmpty;
+
 
 public class UpdateUser {
 	
-	String userid;
-	String email;
-	String password;
-	String created_at;
-	String updated_at;
+	String userid="";
+	@NotEmpty (message = "Please enter name")
+	String name="";
+	@Email (message = "Email format is not valid")
+	@NotEmpty (message = "Please enter email id")
+	String email="";
+	@NotEmpty (message = "Please enter contact number") 
+	String contactNumber = "";
+	@NotEmpty (message = "Please enter password") 
+	String password="";
+	
+	
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getContactNumber() {
+		return contactNumber;
+	}
+
+	public void setContactNumber(String contactNumber) {
+		this.contactNumber = contactNumber;
+	}
 
 	public String getUserid() {
 		return userid;
@@ -33,20 +59,4 @@ public class UpdateUser {
 		this.password = password;
 	}
 
-	public String getCreated_at() {
-		return created_at;
-	}
-
-	public void setCreated_at(String created_at) {
-		this.created_at = created_at;
-	}
-
-	public String getUpdated_at() {
-		return updated_at;
-	}
-
-	public void setUpdated_at(String updated_at) {
-		this.updated_at = updated_at;
-	}
-	
 }
