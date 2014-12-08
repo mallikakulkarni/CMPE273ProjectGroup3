@@ -15,11 +15,14 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,7 +40,7 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 
-@RestController
+@Controller
 @Configuration
 @ComponentScan
 @EnableAutoConfiguration
@@ -68,51 +71,82 @@ public class Application {
 	 
 	 //welcome message
 	 @RequestMapping(value = "", method = RequestMethod.GET)
-	 @ResponseBody
+	 
 	 public String welcomeMessage()
 	 {
-	   	return "Welcome to Sticky notes";    	
+	   	System.out.println("Welcome to Sticky notes");
+	  // model.addAttribute("createuser",new CreateUser());
+	   
+		
+	   	return "index";
 	 }
+	 
+	 
+ @RequestMapping(value = "/register", method = RequestMethod.GET)
+	 
+	 public String registerForm(Model model)
+	 {
+	   	System.out.println("In register method");
+	   model.addAttribute("createuser",new CreateUser());
+	
+	   	return "register";
+	 }
+ 
+ @RequestMapping(value = "/logout", method = RequestMethod.GET)
+ 
+ public String registerForm()
+ {
+   	System.out.println("In logout method");
+
+   	return "index";
+   	
+ }
 	 	 
 	 //Creating user
 	 @RequestMapping(value= "/users", method = RequestMethod.POST)
-	 @ResponseBody
-	 public ResponseEntity<Object> createUser(@Valid @RequestBody CreateUser user) throws UnknownHostException
+	 public String createUser(@Valid @ModelAttribute CreateUser createuser,Model model) throws UnknownHostException
 	 {
+		 model.addAttribute("createuser",createuser);
+
 		 coll =  DBConnection.getConnection();
-		 BasicDBObject query = new BasicDBObject("email", user.getEmail()); // for eamil already exist validation
+		 BasicDBObject query = new BasicDBObject("email", createuser.getEmail()); // for eamil already exist validation
 		 DBCursor cursor = coll.find(query);
 		 try {
 			 	if(cursor.hasNext())
-			 	{	return new ResponseEntity<Object>(new Error(user.getEmail()),HttpStatus.BAD_REQUEST);
+			 	{	
+			 		System.out.println(createuser.getEmail());
+			 		return "get";
+			 		
 			 	}else{    		
-				 doc = new BasicDBObject("userid", user.getUserid()).append("name",user.getName()).append("email", user.getEmail()).append("contactNumber", user.getContactNumber()).append("password", user.getPassword()).append("created_at", user.getCreated_at());
+				 doc = new BasicDBObject("userid", createuser.getUserid()).append("name",createuser.getName()).append("email", createuser.getEmail()).append("contactNumber", createuser.getContactNumber()).append("password", createuser.getPassword()).append("created_at", createuser.getCreated_at());
 				 coll.insert(doc);
-				 return new ResponseEntity<Object>(user, HttpStatus.CREATED);
-			 	}
+				 System.out.println("inserted");
+				 return "get";			 	}
 			 }
 		 finally {cursor.close();}  	
 	  }
 	  
 	 //get user details
-	 @RequestMapping(value ="/users/{userid}", method = RequestMethod.GET)
-	 @ResponseBody
-	 public ResponseEntity<Object> getUser(@PathVariable String userid) throws UnknownHostException
+	 @RequestMapping(value ="/users/{email}/", method = RequestMethod.GET)
+	
+	 public String getUser(@PathVariable String email,Model model) throws UnknownHostException
 	 {
-	    coll =  DBConnection.getConnection();
-	    BasicDBObject query = new BasicDBObject("userid", userid);
-	    DBCursor cursor = coll.find(query);
-	    try {
+		 coll =  DBConnection.getConnection();
+		    BasicDBObject query = new BasicDBObject("email", email);
+		    System.out.println("email entered is "+email);
+		    DBCursor cursor = coll.find(query);
+		    try {
 	    		if(cursor.hasNext())
 	    		{	GetUser getUser = new GetUser(cursor);
-	    			return new ResponseEntity<Object>(getUser, HttpStatus.OK);
+	    			model.addAttribute("getUser", getUser);
+	    			return "user_homepage";
 	    		}
 	    		else{
-	    		return new ResponseEntity<Object>(new Error(userid), HttpStatus.BAD_REQUEST);
-	    		}
-	    	}
-	    finally{cursor.close();}
-	 }
+		    		return "No such user";
+		    		}
+		    	}
+		    finally{cursor.close();}
+		 }
 	   
 	 //Update User Details
 	 @RequestMapping(value ="/users/{userid}", method = RequestMethod.PUT)
