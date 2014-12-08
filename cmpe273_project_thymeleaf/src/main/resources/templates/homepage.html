@@ -63,8 +63,7 @@
                         <!-- Menu Footer-->
                         <li class="user-footer">
                             <div class="pull-left">
-
-                                <button class="btn btn-default btn-flat"><a href="/stickynote/users/${email}/settings">Profile</a></button>
+                                <button class="btn btn-default btn-flat" ><a th:href="@{http://localhost:8080/stickynote/users/settings(userid=${getUser.userid})}">Profile</a></button>
                             </div>
                             <div class="pull-right">
                                 <a href="#" class="btn btn-default btn-flat">Sign out</a>
@@ -316,6 +315,7 @@ function saveuserid() {
 if(typeof(Storage) !== "undefined") {
     /*[+ var userid  = [[${getUser.userid}]]; +]*/
     console.log(userid);
+
 } else {
 document.getElementById("result").innerHTML = "Sorry, your browser does not support web storage...";
 }

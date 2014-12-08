@@ -176,12 +176,12 @@ public class Application {
 //	 }
 	        
 
-    @RequestMapping(value="/users/{email}/settings", method = RequestMethod.GET)
-    public String getSettings(@PathVariable String email,Model model) throws UnknownHostException
+    @RequestMapping(value="/users/settings", method = RequestMethod.GET)
+    public String getSettings(@RequestParam String userid,Model model) throws UnknownHostException
     {
         coll =  DBConnection.getConnection();
-        BasicDBObject query = new BasicDBObject("email", email);
-        System.out.println("email entered is "+email);
+        BasicDBObject query = new BasicDBObject("userid", userid);
+        System.out.println("email entered is "+userid);
         DBCursor cursor = coll.find(query);
         try {
             if (cursor.hasNext()) {
@@ -189,7 +189,7 @@ public class Application {
                 model.addAttribute("getUser", getUser);
                 return "settings";
             } else {
-                return "No such user";
+                return "nosuchuser";
             }
         }
         finally{cursor.close();}
