@@ -107,8 +107,9 @@ public class Application {
 	    		{	GetUser getUser = new GetUser(cursor);
 	    			return new ResponseEntity<Object>(getUser, HttpStatus.OK);
 	    		}
-	    		else{
-	    		return new ResponseEntity<Object>(new Error(userid), HttpStatus.BAD_REQUEST);
+	    		else
+	    		{
+	    			return new ResponseEntity<Object>(new Error(userid), HttpStatus.BAD_REQUEST);
 	    		}
 	    	}
 	    finally{cursor.close();}
@@ -442,6 +443,26 @@ public class Application {
 			{cursor.close();}
 		}
 			
+	
+	@RequestMapping(value ="/users/{userid}/allnotes", method = RequestMethod.GET)
+	 @ResponseBody
+	 public ResponseEntity<Object> getAllNotes(@PathVariable String userid) throws UnknownHostException
+	 {
+	    coll =  DBConnection.getConnection();
+	    BasicDBObject query = new BasicDBObject("userid", userid);
+	    DBCursor cursor = coll.find(query);
+	    try {
+	    		if(cursor.hasNext())
+	    		{	GetAllNotes notes = new GetAllNotes();
+	    			return new ResponseEntity<Object>(notes.getNotesList(cursor), HttpStatus.OK);
+	    		}
+	    		else{
+	    		return new ResponseEntity<Object>(new Error(userid), HttpStatus.BAD_REQUEST);
+	    		}
+	    	}
+	    finally{cursor.close();}
+	 }
+
 	
 	 //handling exceptions
 	 @ExceptionHandler({MethodArgumentNotValidException.class, ServletRequestBindingException.class})

@@ -1,15 +1,29 @@
 package stickynote;
 
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.TimeZone;
+
 import org.hibernate.validator.constraints.NotEmpty;
+
 import com.dropbox.core.DbxClient;
 import com.dropbox.core.DbxEntry;
 import com.dropbox.core.DbxException;
 import com.dropbox.core.DbxWriteMode;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBCollection;
+import com.mongodb.DBCursor;
+import com.mongodb.DBObject;
 
 public class CreateNote {
 	
@@ -75,6 +89,7 @@ public class CreateNote {
 		        try {
 		            DbxEntry.File uploadedFile = client.uploadFile("/"+file_name+".doc",
 		                DbxWriteMode.add(), inputFile.length(), inputStream);
+		            createDbMetadata(userid,file_name);
 		            
 		        } finally {
 		            inputStream.close();
@@ -92,6 +107,46 @@ public class CreateNote {
 		}
 		
 	}
+	
+	
+	
+	public void createDbMetadata(String userid,String file_name) throws UnknownHostException
+	{
+		 DBCollection coll;
+		 coll =  DBConnection.getConnection();
+		 TimeZone tz = TimeZone.getTimeZone("UTC");
+		 DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T':HH:mm:ss'Z'");
+		 df.setTimeZone(tz);
+		 DBObject basicQuery = new BasicDBObject("userid", userid);
+		 BasicDBObject newNote =  new BasicDBObject()
+		 				.append("filename",file_name)
+		 				.append("created_time",df.format(new Date()))
+		 				.append("updated_time",df.format(new Date()));
+		 				
+		 DBCursor cur = coll.find(basicQuery);
+		 boolean isNotFirstFile = cur.hasNext();
+		 
+		 if(isNotFirstFile)
+		 {
+			 System.out.println("Not first File for user :"+userid);
+			 BasicDBObject userNotes = new BasicDBObject()
+			 .append("notes", newNote);
+			 DBObject updateQuery = new BasicDBObject("$push", userNotes);
+			 coll.update(basicQuery, updateQuery);
+		 }
+		 
+		 else
+		 {
+			  System.out.println("is first note");
+			  List<BasicDBObject> dbObjList = new ArrayList<BasicDBObject>();
+			  dbObjList.add(newNote);
+			  basicQuery.put("notes",dbObjList);
+			  coll.insert(basicQuery);
+		 }
+		 System.out.println("Inserting the note info in the DB");
+		
+	}
+
 	
 	
 }
