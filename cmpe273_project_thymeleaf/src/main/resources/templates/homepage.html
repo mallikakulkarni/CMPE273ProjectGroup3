@@ -148,26 +148,31 @@
                                         <!-- text input -->
                                         <div class="form-group">
                                             
-                                            <input type="text" class="form-control" placeholder="Title"></input>
+                                            <input id = "note_title" type="text" class="form-control" placeholder="Title"></input>
                                         </div>
                                    
                                         <!-- textarea -->
                                         <div class="form-group">
                                             
-                                            <textarea id = "text_area_note" class="form-control" rows="3" placeholder="Enter Note"></textarea>
+                                            <textarea id = "note_text_area" class="form-control" rows="3" placeholder="Enter Note"></textarea>
                                         </div>
                      </div>
-                       
-					</div>
+                     </div>
+                  
 					<div class="col-md-6">
                         <div class="box-body">
                                     
                                      
                                         <!-- textarea -->
                                         <div class="form-group">
-                                            <button id ="add_edit_button" class="btn btn-success" onclick = "addnotehtml()">Add Note</button>
+                                            <button id ="add_button" class="btn btn-success" onclick ="addnoteajax()">Add Note</button>
+                                            
                                         </div>
                      </div>
+                      <div id= "error_box" class="box-body">
+                     
+                     </div>
+                    
                        
 					</div>
 					
@@ -252,20 +257,63 @@
         function processUrlData() {
             $.ajax({
                 type: "GET",
-                url: "http://localhost:8080/stickynote/test",     
-               
+                url: "http://localhost:8080/stickynote/test",    
                 success: function() {
                     console.log("testing");
                 },
-                error : function() {
-                    
+                error : function() {       
                 }
             });
         }
+       
+       
+        	
+        	function addnoteajax() {
+
+                var file_name = $('#note_title').val();
+                if(file_name=="")
+                	{
+                	file_name = "default";
+                	}
+                	
+                var userid = "U-20141208193009";
+                var file_data = $('#note_text_area').val();
+                var json = { "file_name" : file_name, "userid" : userid, "file_data": file_data};
+                $.ajax({
+                    url: "http://localhost:8080/stickynote/users/addnote",
+                    data: JSON.stringify(json),
+                    type: "POST",
+                    
+                    beforeSend: function(xhr) {
+                        xhr.setRequestHeader("Accept", "application/json");
+                        xhr.setRequestHeader("Content-Type", "application/json");
+                    },
+                    success: function(responsentity) {
+                    	$("#note_text_area").val("");
+                    	$("#note_title").val("");
+                    	addnotehtml(responsentity.file_name);
+                    	
+              
+                    },
+                    error: function(errorThrown) {
+                    	
+                    	displayerror(errorThrown.responseText);
+                    	
+                     }
+
+                });
+        }
+        	
+        function displayerror(error)
+        {
+        	
+        	$("#error_box").append('<div  class="alert alert-danger alert-dismissable"><i class="fa fa-ban"></i><button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button><span id="error_text"></span></div>');
+            $("#error_text").text(error);
+        }
         
-        function addnotehtml() {
+        function addnotehtml(title) {
         	count = count + 1 ;
-        	$("#notes_main_div").append('<div class="col-lg-3 col-xs-6" id = "a' + count + '"><div class="small-box bg-yellow"><div class="inner"><h3>150</h3><p>New Orders</p></div><div class="small-box-footer">View<a class="fa fa-arrow-circle-right"></a>  Edit<a class="fa fa-fw fa-edit" onclick = "editenotehtml(this)"></a>  Delete<a class="fa fa-fw fa-trash-o" onclick = "deletenotehtml()"></a></div></div></div>');
+        	$("#notes_main_div").append('<div class="col-lg-3 col-xs-6" id = "' + title + '"><div class="small-box bg-yellow"><div class="inner"><p>' + title +'</p></div><div class="small-box-footer">View<a class="fa fa-arrow-circle-right"></a>  Edit<a class="fa fa-fw fa-edit" onclick = "editenotehtml(this)"></a>  Delete<a class="fa fa-fw fa-trash-o" onclick = "deletenotehtml()"></a></div></div></div>');
         }
         
         function deletenotehtml() {
@@ -275,8 +323,8 @@
         
          function editenotehtml(param) {
         	
-        	 $("#text_area_note").val(param.parentNode.parentNode.parentNode.id);
-        	 $("add_edit_button#").val("Save Edited Note");
+        	 $("#note_text_area").val(param.parentNode.parentNode.parentNode.id);
+        	 $("add_button#").val("Save Edited Note");
         }
         </script>
 

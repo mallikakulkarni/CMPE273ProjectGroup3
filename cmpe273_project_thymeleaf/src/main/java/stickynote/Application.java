@@ -14,6 +14,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -127,6 +128,8 @@ public class Application {
 	 
 	 
 	 
+ 
+ 
 	 //Creating user
 	 @RequestMapping(value= "/users", method = RequestMethod.POST)
 	 @ResponseBody 
@@ -361,27 +364,30 @@ public class Application {
 	 
 	 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 	 
-	 //Create StickyNote
-	 @RequestMapping(value ="/users/{userid}/note", method = RequestMethod.POST)
+	//Create StickyNote
+	 @RequestMapping(value="/users/addnote", method=RequestMethod.POST, 
+	            produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	
 	 @ResponseBody
-	 public ResponseEntity<Object> createNote(@PathVariable String userid, @Valid @RequestBody CreateNote createNote) throws UnknownHostException, DbxException
+	 public ResponseEntity<Object> createNote(@Valid @RequestBody CreateNote createNote) throws UnknownHostException, DbxException
 	 {
 	    coll =  DBConnection.getConnection();
-	    BasicDBObject query = new BasicDBObject("userid", userid);
+	    BasicDBObject query = new BasicDBObject("userid", createNote.userid);
 	    DBCursor cursor = coll.find(query);
 	    try {
 	    		if(cursor.hasNext())
 	    		{	
-	    			 if(!(clientDropboxInfo.containsKey(userid)))
-	    			 {
+	    			//if(!(clientDropboxInfo.containsKey(createNote.userid)))
+	    			/*if(false) 
+	    			{
 	    			     return new ResponseEntity<Object>(new Error("User is not Authorized with Dropbox. Go to Settings and authorize user.",1), HttpStatus.BAD_REQUEST);
 	    			 }
 	    			 else
 	    			 {
-	    				 createNote.setUserid(userid);
-	    				 client = (DbxClient)clientDropboxInfo.get(userid);
+	    				 createNote.setUserid(createNote.userid);
+	    				 client = (DbxClient)clientDropboxInfo.get(createNote.userid);
 	    				 
-		    			 String response = createNote.createFile(userid,client);
+		    			 String response = createNote.createFile(createNote.userid,client);
 		    			 if(response.equals("created"))
 		    			 {	
 		    				 return new ResponseEntity<Object>(createNote, HttpStatus.CREATED);
@@ -390,11 +396,13 @@ public class Application {
 		    			 {
 		    			     return new ResponseEntity<Object>(new Error(response,1), HttpStatus.BAD_REQUEST);
 		    			 }
-	    			 }   		  
+	    			 }   */
+	    			
+	    			return new ResponseEntity<Object>(createNote, HttpStatus.CREATED);
 	    		  }
 	    		  else
 	    		  {
-	    			return new ResponseEntity<Object>(new Error(userid), HttpStatus.BAD_REQUEST);
+	    			return new ResponseEntity<Object>(new Error(createNote.userid), HttpStatus.BAD_REQUEST);
 	    		  }
 	    	}
 	    	catch(Exception e)
