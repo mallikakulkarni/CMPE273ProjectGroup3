@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.test</groupId>
-	<artifactId>demo</artifactId>
+	<artifactId>stickynote</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
@@ -65,16 +65,18 @@
     		<artifactId>javax.mail-api</artifactId>
     		<version>1.5.2</version>
 	</dependency>
+	
 	<dependency>
-    		<groupId>commons-httpclient</groupId>
-    		<artifactId>commons-httpclient</artifactId>
-    		<version>3.1</version>
+	<groupId>org.apache.httpcomponents</groupId>
+	<artifactId>httpclient</artifactId>
+	<version>4.2.1</version>
 	</dependency>
+	
 	</dependencies>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<start-class>demo.Application</start-class>
+		<start-class>stickynote.Application</start-class>
 		<java.version>1.7</java.version>
 	</properties>
 

@@ -161,13 +161,8 @@ public String getUser(@RequestParam String useremail, @RequestParam String passw
     try {
     		if(cursor.hasNext())
     		{	
-    			System.out.println("in loop");
     			GetUser getUser = new GetUser(cursor);
-    			
     			System.out.println(getUser.password);
-				//ValidateUser validateUser = new ValidateUser(cursor);
-				System.out.println("##########"+password);
-				//boolean res = validateUser.isUserValid(password);
 				if(getUser.password.equals(password))
 				{
     				model.addAttribute("getUser", getUser);
@@ -501,7 +496,7 @@ public ResponseEntity<Object> getAllNotes(@PathVariable String userid) throws Un
 @RequestMapping(value ="/users/{userid}/note/{file_name}", method = RequestMethod.DELETE)
 @ResponseBody
 public ResponseEntity<Object> deleteNote(@PathVariable String userid, @PathVariable String file_name) throws IOException, UnknownHostException
-	{
+{
 		coll =  DBConnection.getConnection();
 		BasicDBObject query = new BasicDBObject("userid", userid);
 		DBCursor cursor = coll.find(query);
@@ -538,7 +533,7 @@ public ResponseEntity<Object> deleteNote(@PathVariable String userid, @PathVaria
 		}
 		finally
 		{cursor.close();}
-	}
+}
 	
 			
 	

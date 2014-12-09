@@ -57,8 +57,6 @@ public class CreateNote {
 	
 	public String createFile(String userid,DbxClient client) throws DbxException
 	{
-		
-		try{
 		File fileDir = new File("./UserNote/"+userid);
 		if(!(fileDir.exists()))
 		{
@@ -66,44 +64,67 @@ public class CreateNote {
 		}
 		
 		File file = new File("./UserNote/"+userid+"/"+file_name+".doc");
-		if(!(file.exists()))
+		
+		if(cursor.hasNext())
 		{
-			file.createNewFile();
-			FileWriter fw = new FileWriter(file.getAbsoluteFile());
-			BufferedWriter bw = new BufferedWriter(fw);
-			bw.write("Title: "+file_name);
-			bw.write("\n");
-			bw.write("============================================================================================================================");
-			bw.write("\n");
-			bw.write("\n");
-			bw.write(file_data);
-			bw.write("\n");
-			bw.write("\n");
-			bw.write("============================================================================================================================");
-			bw.close();
-			
-			  File inputFile = new File("./UserNote/"+userid+"/"+file_name+".doc");
-		       // inputFile.createNewFile();
-		        FileInputStream inputStream = new FileInputStream(inputFile);
-		        
-		        try {
-		            DbxEntry.File uploadedFile = client.uploadFile("/"+file_name+".doc",
-		                DbxWriteMode.add(), inputFile.length(), inputStream);
-		            createDbMetadata(userid,file_name);
-		            
-		        } finally {
-		            inputStream.close();
-		        }
-		        
-			return "created";
+			BasicDBObject query1 = (BasicDBObject) cursor.next();
+    		try{
+    			BasicDBList dblist = (BasicDBList) query1.get("notes");
+				if(dblist.toString().contains(this.getFile_name()))
+				{
+					return "file already exists";
+				}
+				else
+				{
+					file.createNewFile();
+					FileWriter fw = new FileWriter(file.getAbsoluteFile());
+					BufferedWriter bw = new BufferedWriter(fw);
+					bw.write(file_data);
+					bw.close();
+					
+					  File inputFile = new File("./UserNote/"+userid+"/"+file_name+".doc");
+				       // inputFile.createNewFile();
+				        FileInputStream inputStream = new FileInputStream(inputFile);
+				        
+				        try {
+				            DbxEntry.File uploadedFile = client.uploadFile("/"+file_name+".doc",
+				                DbxWriteMode.add(), inputFile.length(), inputStream);
+				            createDbMetadata(userid,file_name);
+				            
+				        } finally {
+				            inputStream.close();
+				        }
+				        
+					return "created";
+				}
+				}
+    		
+    		catch(Exception e)
+    		{
+    			file.createNewFile();
+				FileWriter fw = new FileWriter(file.getAbsoluteFile());
+				BufferedWriter bw = new BufferedWriter(fw);
+				bw.write(file_data);
+				bw.close();
+				
+				  File inputFile = new File("./UserNote/"+userid+"/"+file_name+".doc");
+			       // inputFile.createNewFile();
+			        FileInputStream inputStream = new FileInputStream(inputFile);
+			        
+			        try {
+			            DbxEntry.File uploadedFile = client.uploadFile("/"+file_name+".doc",
+			                DbxWriteMode.add(), inputFile.length(), inputStream);
+			            createDbMetadata(userid,file_name);
+			            
+			        } finally {
+			            inputStream.close();
+			        }
+			   return "created";
+    		 }
 		}
 		else
 		{
-			return "file already exist";}
-		}
-		catch(IOException e)
-		{
-			return e.toString();
+			return "user does not exist";
 		}
 		
 	}
