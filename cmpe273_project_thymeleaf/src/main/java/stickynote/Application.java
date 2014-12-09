@@ -256,30 +256,29 @@ public class Application {
         }
         finally{cursor.close();}
     }
-	 
-	 @RequestMapping(value ="/users/{userid}", method = RequestMethod.DELETE)
-	 @ResponseBody
-	 public ResponseEntity<Object> deleteUser(@PathVariable String userid) 
-			 
-			 throws UnknownHostException
-	 {
-	    coll =  DBConnection.getConnection();
-	    BasicDBObject query = new BasicDBObject("userid", userid);
-	    DBCursor cursor = coll.find(query);
-	    try {
-	    		if(cursor.hasNext())
-	    		{	
-	    			GetUser getUser = new GetUser(cursor);
-	    			coll.remove(query);
-	    			DeleteUser user = new DeleteUser(getUser.getUserid()," user has been deleted");
-	    			return new ResponseEntity<Object>(user, HttpStatus.OK);
-	    		}
-	    		else{
-	    		return new ResponseEntity<Object>(new Error(userid), HttpStatus.BAD_REQUEST);
-	    		}
-	    	}
-	    finally{cursor.close();}
-	 }
+
+    @RequestMapping(value ="/users/deleteuser", method = RequestMethod.POST)
+    public String deleteUser(@RequestParam String userid)
+
+            throws UnknownHostException
+    {
+        coll =  DBConnection.getConnection();
+        BasicDBObject query = new BasicDBObject("userid", userid);
+        DBCursor cursor = coll.find(query);
+        try {
+            if(cursor.hasNext())
+            {
+                GetUser getUser = new GetUser(cursor);
+                coll.remove(query);
+                DeleteUser user = new DeleteUser(getUser.getUserid()," user has been deleted");
+                return "index";
+            }
+            else{
+                return "settings";
+            }
+        }
+        finally{cursor.close();}
+    }
 	 
 	 
 	 
