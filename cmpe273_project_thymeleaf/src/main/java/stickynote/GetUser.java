@@ -22,7 +22,7 @@ public class GetUser {
 		this.setPassword(obj.get("password").toString());
 		this.setCreated_at(obj.get("created_at").toString());
 		this.setName(obj.get("name").toString());
-		this.setContactNumber(obj.get("contactNumber").toString());
+		//this.setContactNumber(obj.get("contactNumber").toString());
 	}
 	
 	

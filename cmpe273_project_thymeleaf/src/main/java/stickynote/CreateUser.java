@@ -19,7 +19,7 @@ public class CreateUser {
 	String created_at ="";
 	@NotEmpty (message = "Please enter name")  
 	String name = "";
-	@NotEmpty (message = "Please enter contact number")  
+	//@NotEmpty (message = "Please enter contact number")  
 	String contactNumber = "";
 	
 	public CreateUser()
