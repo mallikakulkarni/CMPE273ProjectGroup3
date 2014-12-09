@@ -185,21 +185,6 @@
                     <!-- Small boxes (Stat box) -->
                     <div id = "notes_main_div">
                     
-  					<div class="col-lg-3 col-xs-6" id = "a' + count + '">
-  					<div class="small-box bg-yellow">
-  					<div class="inner">
-  					<h3>150</h3>
-  					<p>New Orders</p>
-  					</div>
-  					<div class="small-box-footer">
-  					View<a class="fa fa-arrow-circle-right"></a>  
-  					Edit<a class="fa fa-fw fa-edit" onclick = "editenotehtml(this)"></a>  
-  					Delete<a class="fa fa-fw fa-trash-o" onclick = "deletenotehtml()"></a>
-  					</div>
-  					</div>
-  					</div>
-  
-  
                     </div><!-- /.row -->
 
                     <!-- Main row -->
@@ -256,15 +241,32 @@
 
         <!-- AdminLTE for demo purposes -->
         <script src="../../js/AdminLTE/demo.js" type="text/javascript"></script>
-        <script type="text/javascript">
+        <script type="text/javascript" th:inline="text">
         var count = 0;
         window.onload = function() {
         	$("#edit_button").hide();
+            var userid = "U-20141208193009";
+            $.ajax({
+                url: "./users/" + userid +"/allnotes", 
+                type: "GET",
+                beforeSend: function(xhr) {
+                    xhr.setRequestHeader("Accept", "application/json");
+                    xhr.setRequestHeader("Content-Type", "application/json");
+                },
+                success: function(responsentity) {
+                	loopnotes(responsentity);
+                	
+                },
+                error: function(errorThrown) {
+                	
+                	displayerror(errorThrown.responseText);
+                	
+                 }
+
+            });
         }
         
-        $(document).ready(function() {
-        	$("#edit_button").hide();
-        });
+       
         
         function processUrlData() {
             $.ajax({
@@ -293,7 +295,7 @@
                 var file_data = $('#note_text_area').val();
                 var json = { "file_name" : file_name, "userid" : userid, "file_data": file_data};
                 $.ajax({
-                    url: "./users/addnote",
+                    url: "./users/" + userid +"/note",
                     data: JSON.stringify(json),
                     type: "POST",
                     
@@ -422,14 +424,24 @@
         function displayerror(error)
         {
         	
-        	$("#error_box").html('<div  class="alert alert-danger alert-dismissable"><i class="fa fa-ban"></i><button type="button" class="close" data-dismiss="alert" aria-hidden="true">Ã—</button><span id="error_text"></span></div>');
+        	$("#error_box").html('<div  class="alert alert-danger alert-dismissable"><i class="fa fa-ban"></i><button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button><span id="error_text"></span></div>');
             $("#error_text").text(error);
+        }
+        
+        
+        function loopnotes(responsentity)
+        {
+        	 /*<![CDATA[*/
+        	for (var i = 0; i<9; i++) {
+        		addnotehtml(i,responsentity[0].file_name+i+" test note");
+        		}
+        	/*]]>*/
         }
         
         function displaysuccess(success)
         {
   
-        	$("#error_box").html('<div  class="alert alert-success alert-dismissable"><i class="fa fa-ban"></i><button type="button" class="close" data-dismiss="alert" aria-hidden="true">Ã—</button><span id="error_text"></span></div>');
+        	$("#error_box").html('<div  class="alert alert-success alert-dismissable"><i class="fa fa-ban"></i><button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button><span id="error_text"></span></div>');
             $("#error_text").text(success);
         }
         
