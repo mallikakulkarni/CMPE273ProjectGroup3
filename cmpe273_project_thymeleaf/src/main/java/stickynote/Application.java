@@ -542,9 +542,10 @@ public class Application {
 		    		DbxClient client = (DbxClient)clientDropboxInfo.get(userid);
 		    		DeleteNote deleteNote = new DeleteNote();
 		    		String res = deleteNote.deleteNoteAction(client, file_name, userid);
-		    		deleteNote.deleteNoteMetaDataDb(userid,file_name);
+		    		
 		    		if(res.equals("success"))
 		    		{
+		    			deleteNote.deleteNoteMetaDataDb(userid,file_name);
 		    			return new ResponseEntity<Object>(new Success(file_name+ " successfully deleted..!!"), HttpStatus.OK);
 		    		}
 		    		else
