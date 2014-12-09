@@ -428,7 +428,11 @@ public class Application {
 		  try{
 		    if(cursor.hasNext())
 	    	 {	
-	    		 if(!(clientDropboxInfo.containsKey(userid)))
+		    	GetNote getNote = new GetNote();
+    			getNote.setFile_name(file_name);
+    			getNote.setUserid(userid);
+		    	return new ResponseEntity<Object>(getNote, HttpStatus.OK);
+		    	/*if(!(clientDropboxInfo.containsKey(userid)))
 	    		 {
 	    			 return new ResponseEntity<Object>(new Error("User is not Authorized with Dropbox. Go to Settings and authorize user.",1), HttpStatus.BAD_REQUEST);
 	    		 }
@@ -459,7 +463,7 @@ public class Application {
 		    		{
 		    			 return new ResponseEntity<Object>(new Error(response,1), HttpStatus.BAD_REQUEST);
 		    		}
-	    		}
+	    		}*/
 		    }
 			else
 			{
@@ -481,7 +485,7 @@ public class Application {
 			try{
 			 if(cursor.hasNext())
 		     {	
-				if(!(clientDropboxInfo.containsKey(userid)))
+				/*if(!(clientDropboxInfo.containsKey(userid)))
 		    	{
 				 return new ResponseEntity<Object>(new Error("User is not Authorized with Dropbox. Go to Settings and authorize user.",1), HttpStatus.BAD_REQUEST);
 		    	}
@@ -509,7 +513,8 @@ public class Application {
 		    			return new ResponseEntity<Object>(new Error(res,1), HttpStatus.BAD_REQUEST);
 		    		}
 		    				    		
-			    }
+			    }*/
+				 return new ResponseEntity<Object>(updateNote, HttpStatus.CREATED);
 		     }
 			else
 			{
@@ -532,7 +537,7 @@ public class Application {
 			try{
 			 if(cursor.hasNext())
 		     {	
-				if(!(clientDropboxInfo.containsKey(userid)))
+				/*if(!(clientDropboxInfo.containsKey(userid)))
 		    	{
 				 return new ResponseEntity<Object>(new Error("User is not Authorized with Dropbox. Go to Settings and authorize user.",1), HttpStatus.BAD_REQUEST);
 		    	}
@@ -551,7 +556,8 @@ public class Application {
 		    			return new ResponseEntity<Object>(new Error(res,1), HttpStatus.BAD_REQUEST);
 		    		}
 		    				    		
-			    }
+			    }*/
+				 return new ResponseEntity<Object>(new Success(file_name+ " successfully deleted..!!"), HttpStatus.OK);
 		     }
 			else
 			{
