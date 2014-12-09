@@ -74,8 +74,7 @@ public class Application {
 	 }
 	 
 	 
- @RequestMapping(value = "/register", method = RequestMethod.GET)
-	 
+     @RequestMapping(value = "/register", method = RequestMethod.GET)
 	 public String registerForm(Model model)
 	 {
 	   	System.out.println("In register method");
@@ -98,29 +97,9 @@ public class Application {
 	 
 	 
 	 //Creating user
-	 
- @RequestMapping(value= "/users", method = RequestMethod.POST)
- public String createUser(@Valid @ModelAttribute CreateUser createuser,Model model) throws UnknownHostException
-	 {
-		 System.out.println("in post");
-		 model.addAttribute("createuser",createuser);
-		 coll =  DBConnection.getConnection();
-		 BasicDBObject query = new BasicDBObject("email", createuser.getEmail()); // for eamil already exist validation
-		 DBCursor cursor = coll.find(query);
-		 try {
-			 	if(cursor.hasNext())
-			 	{	System.out.println(createuser.getEmail());
-			 		return "get";
-			 	}else{    		
-				 doc = new BasicDBObject("userid", createuser.getUserid()).append("email", createuser.getEmail()).append("password", createuser.getPassword()).append("created_at", createuser.getCreated_at()).append("updated_at", createuser.getUpdated_at());
-				 coll.insert(doc);
-				 System.out.println("inserted");
-				 return "get";
-			 	}
-			 }
-		 finally {cursor.close();}  	
-	  }
-	 
+
+
+
 	 
 	 
 	 
@@ -177,7 +156,7 @@ public class Application {
 	        
 
     @RequestMapping(value="/users/settings", method = RequestMethod.GET)
-    public String getSettings(@RequestParam String userid,Model model) throws UnknownHostException
+    public String getSettings(@RequestParam String userid, Model model) throws UnknownHostException
     {
         coll =  DBConnection.getConnection();
         BasicDBObject query = new BasicDBObject("userid", userid);
@@ -217,16 +196,37 @@ public class Application {
 	    finally{cursor.close();}
 	 }
 
-
-
-    @RequestMapping(value ="/users/{userid}", method = RequestMethod.PUT)
-    @ResponseBody
-    public ResponseEntity<Object> updateUser(@PathVariable String userid,@Valid @RequestBody UpdateUser updateUser)
-
-            throws UnknownHostException
+    @RequestMapping(value= "/users", method = RequestMethod.POST)
+    public String createUser(@Valid @ModelAttribute CreateUser createuser,Model model) throws UnknownHostException
     {
+        model.addAttribute("createuser",createuser);
+
         coll =  DBConnection.getConnection();
-        BasicDBObject query = new BasicDBObject("userid", userid);
+        BasicDBObject query = new BasicDBObject("email", createuser.getEmail()); // for eamil already exist validation
+        DBCursor cursor = coll.find(query);
+        try {
+            if(cursor.hasNext())
+            {
+                System.out.println(createuser.getEmail());
+
+                return "get";
+
+            }else{
+                doc = new BasicDBObject("userid", createuser.getUserid()).append("name",createuser.getName()).append("email", createuser.getEmail()).append("contactNumber", createuser.getContactNumber()).append("password", createuser.getPassword()).append("created_at", createuser.getCreated_at());
+                coll.insert(doc);
+                System.out.println("inserted");
+                return "get";			 	}
+        }
+        finally {cursor.close();}
+
+    }
+
+    @RequestMapping(value ="/users/update", method = RequestMethod.POST)
+    public String updateUserDetails(@Valid @ModelAttribute("updateUser") UpdateUser updateUser,Model model) throws UnknownHostException
+    {
+        model.addAttribute("updateUser", updateUser);
+        coll =  DBConnection.getConnection();
+        BasicDBObject query = new BasicDBObject("userid", updateUser.userid);
         DBCursor cursor = coll.find(query);
         try {
             if(cursor.hasNext())
@@ -236,13 +236,22 @@ public class Application {
                 update.put("$set", new BasicDBObject("email",updateUser.getEmail())
                         .append("password", updateUser.getPassword()).append("name", updateUser.getName()).append("contactNumber", updateUser.getContactNumber()));
                 coll.update(query,update);
-                updateUser.setUserid(userid);
-                //user.setEmail(updateUser.getEmail());
-                //user.setPassword(updateUser.getPassword());
-                return new ResponseEntity<Object>(updateUser, HttpStatus.OK);
+                updateUser.setUserid(updateUser.userid);
+                query = new BasicDBObject("userid", updateUser.getUserid());
+                cursor = coll.find(query);
+
+                if(cursor.hasNext())
+                {	GetUser getUser = new GetUser(cursor);
+                    model.addAttribute("getUser", getUser);
+                    return "homepage";
+                }
+                else{
+                    return "nosuchuser";
+                }
             }
+
             else{
-                return new ResponseEntity<Object>(new Error(userid), HttpStatus.BAD_REQUEST);
+                return "get";
             }
         }
         finally{cursor.close();}
@@ -333,4 +342,10 @@ public class Application {
 		}
 		return errorMapping;
      }
+
+
+    @ModelAttribute("updateUser")
+    public UpdateUser prepareUpdateUserModel() {
+        return new UpdateUser();
+    }
 }

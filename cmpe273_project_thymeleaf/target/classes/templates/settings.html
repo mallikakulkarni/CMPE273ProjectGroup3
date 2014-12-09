@@ -108,56 +108,29 @@
                 <h4>Email</h4>
                 <div class="settings-item">
                     <span><p th:text="${getUser.email}" /></span>
-                    <div><a class="arrow" href="#changeEmail">Manage email address</a></div>
-                    <div id="changeEmail" class="emailDialog">
+                    <div id="changePassword" class="passwordDialog">
                         <div>
                             <a href="#close" title="Close" class="close">X</a>
                             <h2>Email Address</h2>
                             <p>Enter a new email address</p>
-                            <form action="#" th:action="@{http://localhost:8080/stickynote/users/saiganesh.2009@gmail.com/}" method="put">
-                            <p><input type="text" id="email" placeholder="Username or Email" /></p>
-                            <p class="submit"><input type="submit" id="submit" value="Login" /></p>
-                            <p class="reset"><input type="reset" name="reset" value="reset" /></p>
-
+                            <form action="#" th:action="@{http://localhost:8080/stickynote/users/update}" th:object="${updateUser}" method="post">
+                            <div class="form-group">
+                                <p><input type="text" th:field="*{email}" placeholder="New Email" class="form-control"/></p>
+                                <p><input type="text" th:field="*{name}" placeholder="New Name" class="form-control"/></p>
+                                <p><input type="text" th:field="*{contactNumber}" placeholder="New Number" class="form-control"/></p>
+                                <p><input type="text" th:field="*{userid}" placeholder="New UserID" class="form-control"/></p>
+                                <p><input type="text" th:field="*{password}" placeholder="New password" class="form-control"/></p>
+                            </div>
+                            <div class="footer">
+                                <button type="submit" class="btn bg-olive btn-block">Submit</button>
+                                <button type="reset" class="btn bg-olive btn-block">Reset</button>
+                            </div>
                             </form>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <h4>Password</h4>
-                <div class="settings-item">
 
-                    <div><a class="arrow" href="#changePassword">Manage Password</a></div>
-                    <div id="changeEmail" class="emailDialog">
-                        <div>
-                            <a href="#close" title="Close" class="close">X</a>
-                            <h2>Old Password</h2>
-                            <p>New Password</p>
-                            <form action="#" th:action="@{http://localhost:8080/stickynote/users/saiganesh.2009@gmail.com/}" method="put">
-                                <p><input type="password" name="password" id="password" placeholder="Old Password" /></p>
-                                <p><input type="password" name="password" id="password" placeholder="New Password" /></p>
-                                <p><input type="password" name="password" id="password" placeholder="Confirm new Password" /></p>
-                                <p class="submit"><input type="submit" id="submit" value="Login" /></p>
-                                <p class="reset"><input type="reset" name="reset" value="reset" /></p>
-
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <h3>Email Notes to</h3>
-                <div class="settings-item">
-                    <span><p th:text="${getUser.email}" /></span>
-                </div>
-            </div>
-            <div class="row">
-                <h3>SMS notes to</h3>
-                <div class="settings-item">
-                    <span><p th:text="${getUser.email}" /></span>
-                </div>
-            </div>
         </section>
     </aside>
 </div>

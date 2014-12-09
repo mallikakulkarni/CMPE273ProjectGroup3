@@ -21,6 +21,7 @@ public class GetUser {
         this.setEmail(obj.get("email").toString());
         this.setPassword(obj.get("password").toString());
         this.setCreated_at(obj.get("created_at").toString());
+        System.out.println(obj.get("name"));
         this.setName(obj.get("name").toString());
         this.setContactNumber(obj.get("contactNumber").toString());
     }
@@ -33,6 +34,7 @@ public class GetUser {
 
     public void setName(String name) {
         this.name = name;
+        System.out.println(this.name+" "+name);
     }
 
 
