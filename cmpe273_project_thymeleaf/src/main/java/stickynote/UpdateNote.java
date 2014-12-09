@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.UnknownHostException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -14,6 +15,10 @@ import com.dropbox.core.DbxClient;
 import com.dropbox.core.DbxEntry;
 import com.dropbox.core.DbxException;
 import com.dropbox.core.DbxWriteMode;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBCollection;
+import com.mongodb.DBCursor;
+import com.mongodb.DBObject;
 
 public class UpdateNote {
 	
@@ -64,7 +69,8 @@ public class UpdateNote {
 	}
 
 
-	public String updateFile(String userid, DbxClient client, String file_name) throws DbxException {
+	public String updateFile(String userid, DbxClient client, String file_name) throws DbxException 
+	{
 		
 		this.setUserid(userid);
 		
@@ -101,6 +107,7 @@ public class UpdateNote {
 		        try {
 		            DbxEntry.File uploadedFile = client.uploadFile("/"+file_name+".doc",
 		                DbxWriteMode.add(), inputFile.length(), inputStream);
+		          //updateDbMetadata(userid,file_name);
 		            
 		        } finally {
 		            inputStream.close();
@@ -114,5 +121,74 @@ public class UpdateNote {
 		}
 		
 	}		
+	
+	public void updateDbMetadata(String userid,String file_name) throws UnknownHostException
+	{
+		DBCollection coll;
+		coll =  DBConnection.getConnection();
+		TimeZone tz = TimeZone.getTimeZone("UTC");
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T':HH:mm:ss'Z'");
+		df.setTimeZone(tz);
+		BasicDBObject query = new BasicDBObject();
+		query.put("userid", userid);
+		DBCursor cursor = coll.find(query);
+		DBObject obj = cursor.next();
+		
+//		BasicDBObject query = new BasicDBObject();
+//		query.put("userid", userid);
+//		BasicDBObject updateTime = new BasicDBObject();
+//		updateTime.put("updated_time", df.format(new Date()));
+//		BasicDBObject update = new BasicDBObject();
+//		//update.append("$set", new BasicDBObject().append("updated_time", df.format(new Date())));
+//		//update.append("$set", new BasicDBObject().append("updated_time", "just testing"));
+//		coll.update(query, update);
+		
+//		BasicDBObject query = new BasicDBObject("userid", userid);
+//		BasicDBObject time = new BasicDBObject();
+//		time.put("updated_time", df.format(new Date()));
+//		BasicDBObject note = new BasicDBObject("filename",file_name);
+//		query.put("notes", note);
+//		note.append("$set", new BasicDBObject("notes",time));
+//		coll.update(query,note);
+		
+//		BasicDBObject query = new BasicDBObject();
+//		query.put("userid", userid);
+//		BasicDBObject time = new BasicDBObject();
+//		time.put("updated_time", df.format(new Date()));
+//		BasicDBObject update = new BasicDBObject();
+//		update.put("$push", new BasicDBObject("notes",time));
+//		coll.update(query, update);
+		
+		
+//		DBObject query = new BasicDBObject("userid", userid);
+//		query.put("notes.filename", file_name);
+//		DBObject update = new BasicDBObject();
+//		update.put("$set", new BasicDBObject("notes.updated_time",df.format(new Date())));
+//		//coll.update({"userid", userid,"notes.filename",query, update);
+//		coll.update(query, update);
+//		
+
+//		DBCursor cursor = coll.find(query);
+//		DBObject obj = cursor.next();
+//		BasicDBList dbList = (BasicDBList) obj.get("notes");
+//		List<GetAllNotes> notesList = new ArrayList<GetAllNotes>();
+//		
+//		
+//			for (int i = 0; i < dbList.size(); i++) 
+//			{
+//		        BasicDBObject idObj = (BasicDBObject) dbList.get(i);
+//		        String filename = idObj.getString("filename");
+//		        String created_at = idObj.getString("created_time");
+//		        String updated_at = idObj.getString("updated_time");
+//		        GetAllNotes notes = new GetAllNotes();
+//		        notes.setFile_name(filename);
+//		        notes.setCreated_at(created_at);
+//		        notes.setUpdated_at(updated_at);
+//		        notesList.add(notes);
+//		    }
+//		
+		
+	}
+
 
 }

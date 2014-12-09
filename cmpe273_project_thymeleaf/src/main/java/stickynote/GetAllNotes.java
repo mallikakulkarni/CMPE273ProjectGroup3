@@ -45,7 +45,8 @@ public class GetAllNotes
 	}
 	
 	
-	public List<GetAllNotes>getNotesList(DBCursor cursor)
+
+public List<GetAllNotes>getNotesList(DBCursor cursor)
 	{
 		DBObject obj = cursor.next();
 		BasicDBList dbList = (BasicDBList) obj.get("notes");
@@ -53,8 +54,8 @@ public class GetAllNotes
 		
 		if(dbList == null)
 		{
-			GetAllNotes notes = new GetAllNotes();
-			notes.setFile_name("");
+			GetNoNotes notes = new GetNoNotes();
+			notes.setMessage("null");
 			notesList.add(notes);
 		}
 		else
@@ -75,5 +76,6 @@ public class GetAllNotes
 		
 		return notesList;
 	}
+
 
 }

@@ -127,15 +127,6 @@ public class Application {
  }
  
  
- 
- 
- 
- 
- 
- 
- 
- 
- 
  //Creating user
  @RequestMapping(value= "/users", method = RequestMethod.POST)
  public String createUser(@Valid @ModelAttribute CreateUser createuser,Model model) throws UnknownHostException
@@ -221,16 +212,6 @@ public class Application {
      }
      finally{cursor.close();}
  }
-	
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
 	 
 	 
 	 //Deleting user
@@ -540,21 +521,6 @@ public class Application {
 	 }
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	//Delete note 
 	@RequestMapping(value ="/users/{userid}/note/{file_name}", method = RequestMethod.DELETE)
 	@ResponseBody
@@ -576,6 +542,7 @@ public class Application {
 		    		DbxClient client = (DbxClient)clientDropboxInfo.get(userid);
 		    		DeleteNote deleteNote = new DeleteNote();
 		    		String res = deleteNote.deleteNoteAction(client, file_name, userid);
+		    		deleteNote.deleteNoteMetaDataDb(userid,file_name);
 		    		if(res.equals("success"))
 		    		{
 		    			return new ResponseEntity<Object>(new Success(file_name+ " successfully deleted..!!"), HttpStatus.OK);
