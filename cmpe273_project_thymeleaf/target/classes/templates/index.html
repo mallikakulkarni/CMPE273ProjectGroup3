@@ -11,7 +11,7 @@
     function validateForm() {
     	console.log("in function");
     	
-        var x = document.forms["myForm"]["email"].value;
+        var x = document.forms["myForm"]["useremail"].value;
         var y = document.forms["myForm"]["password"].value;
 
         if (x == null || x == "") {
@@ -36,8 +36,8 @@
 <section class="container">
     <div class="login">
         <h1>Sticky Notes</h1>
-    <form action="#" name="myForm" onsubmit="return validateForm()" th:action="@{http://localhost:8080/stickynote/users/saiganesh.2009@gmail.com/}" method="get">
-            <p><input type="text" id="email" name="email" placeholder="Username or Email" /></p>
+    <form action="#" name="myForm" onsubmit="return validateForm()" th:action="@{http://localhost:8080/stickynote/users/homepage}" method="get">
+            <p><input type="text" id="email" name="useremail" placeholder="Username or Email" /></p>
             <p><input type="password" name="password" id="password" placeholder="Password" /></p>
 
             <p class="submit"><input type="submit"  id="submit" value="Login" /></p>

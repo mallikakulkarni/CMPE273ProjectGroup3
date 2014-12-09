@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="../../css/style.css" th:href="@{/css/style.css}"/>
+    <title></title>
+</head>
+<body>
+<p>The credentials you entered are not valid. Please check your username or password or<a href="/stickynote/register">register here</a></p>
+<section class="container">
+    <div class="login">
+        <h1>Sticky Notes</h1>
+        <form name="indexform" action="#" th:action="@{http://localhost:8080/stickynote/users/document.indexform.useremail/}" method="get">
+            <p><input type="text" name="useremail" id="email" placeholder="Username or Email" /></p>
+            <p><input type="password" name="password" id="password" placeholder="Password" /></p>
+
+            <p class="submit"><input type="submit" id="submit" value="Login" /></p>
+            <p class="reset"><input type="reset" name="reset" value="reset" /></p>
+
+        </form>
+    </div>
+</section>
+</body>
+</html>

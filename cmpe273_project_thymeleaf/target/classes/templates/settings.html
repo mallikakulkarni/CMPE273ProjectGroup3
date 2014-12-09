@@ -113,22 +113,26 @@
                             <a href="#close" title="Close" class="close">X</a>
                             <h2>Email Address</h2>
                             <p>Enter a new email address</p>
+
                             <form action="#" th:action="@{http://localhost:8080/stickynote/users/update}" th:object="${updateUser}" method="post">
                             <div class="form-group">
-
                                 <p><input type="text" th:field="*{email}" placeholder="New Email" class="form-control"/></p>
                                 <p><input type="text" th:field="*{name}" placeholder="New Name" class="form-control"/></p>
                                 <p><input type="text" th:field="*{contactNumber}" placeholder="New Number" class="form-control"/></p>
                                 <p><input type="text" th:field="*{userid}" placeholder="New UserID" class="form-control"/></p>
                                 <p><input type="text" th:field="*{password}" placeholder="New password" class="form-control"/></p>
-
-
                             </div>
                             <div class="footer">
                                 <button type="submit" class="btn bg-olive btn-block">Submit</button>
                                 <button type="reset" class="btn bg-olive btn-block">Reset</button>
                             </div>
                             </form>
+                            <div class="form-group">
+                                <form th:action="@{http://localhost:8080/stickynote/users/deleteuser}" th:object="${getUser}" method="post">
+                                    <input type="hidden" th:field="${getUser.userid}" />
+                                    <button type="submit">Delete</button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
