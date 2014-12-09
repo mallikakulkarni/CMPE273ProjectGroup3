@@ -1,0 +1,13 @@
+*Starting smtp server on EC2
+
+ sudo java -jar fakeSMTP-1.12.jar -s -b -o emails
+
+*running the program or jar on EC2
+
+sudo java -jar SendEmail.jar
+
+* checking the emails received
+
+cd emails
+ls
+cat **email number**
