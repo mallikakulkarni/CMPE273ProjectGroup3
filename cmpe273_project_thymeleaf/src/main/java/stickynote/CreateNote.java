@@ -71,15 +71,7 @@ public class CreateNote {
 			file.createNewFile();
 			FileWriter fw = new FileWriter(file.getAbsoluteFile());
 			BufferedWriter bw = new BufferedWriter(fw);
-			bw.write("Title: "+file_name);
-			bw.write("\n");
-			bw.write("============================================================================================================================");
-			bw.write("\n");
-			bw.write("\n");
 			bw.write(file_data);
-			bw.write("\n");
-			bw.write("\n");
-			bw.write("============================================================================================================================");
 			bw.close();
 			
 			  File inputFile = new File("./UserNote/"+userid+"/"+file_name+".doc");

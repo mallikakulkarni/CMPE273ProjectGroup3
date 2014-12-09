@@ -86,30 +86,25 @@ public class Application {
 	 
  @RequestMapping(value = "/register", method = RequestMethod.GET)
 	 
-	 public String registerForm(Model model)
-	 {
-	   	System.out.println("In register method");
-	   model.addAttribute("createuser",new CreateUser());
-	
-	   	return "register";
-	 }
+public String registerForm(Model model)
+{
+	System.out.println("In register method");
+	model.addAttribute("createuser",new CreateUser());
+	return "register";
+}
  
  @RequestMapping(value = "/logout", method = RequestMethod.GET)
  
- public String registerForm()
- {
-   	System.out.println("In logout method");
+public String registerForm()
+{
+   System.out.println("In logout method");
+   return "index";
+}
 
-   	return "index";
-   	
- }
-	 	 
-	
- 
- //settings
- @RequestMapping(value="/users/settings", method = RequestMethod.GET)
- public String getSettings(@RequestParam String userid, Model model) throws UnknownHostException
- {
+//settings
+@RequestMapping(value="/users/settings", method = RequestMethod.GET)
+public String getSettings(@RequestParam String userid, Model model) throws UnknownHostException
+{
      coll =  DBConnection.getConnection();
      BasicDBObject query = new BasicDBObject("userid", userid);
      System.out.println("email entered is "+userid);
@@ -124,12 +119,12 @@ public class Application {
          }
      }
      finally{cursor.close();}
- }
+}
  
  
  //Creating user
  @RequestMapping(value= "/users", method = RequestMethod.POST)
- public String createUser(@Valid @ModelAttribute CreateUser createuser,Model model) throws UnknownHostException
+ public String createUser(@Valid @ModelAttribute CreateUser createuse, Model model) throws UnknownHostException
  {
      model.addAttribute("createuser",createuser);
 
@@ -140,8 +135,7 @@ public class Application {
          if(cursor.hasNext())
          {
              System.out.println(createuser.getEmail());
-
-             return "get";
+             return "userexists";
 
          }else{
              doc = new BasicDBObject("userid", createuser.getUserid()).append("name",createuser.getName()).append("email", createuser.getEmail()).append("contactNumber", createuser.getContactNumber()).append("password", createuser.getPassword()).append("created_at", createuser.getCreated_at());
@@ -153,9 +147,9 @@ public class Application {
 
  }
 	  
-	 //get user details
- @RequestMapping(value ="/users/homepage", method = RequestMethod.GET)
- public String getUser(@RequestParam String useremail,Model model) throws UnknownHostException
+//get user details
+@RequestMapping(value ="/users/homepage", method = RequestMethod.GET)
+public String getUser(@RequestParam String useremail, @RequestParam String password, Model model) throws UnknownHostException
  {
     coll =  DBConnection.getConnection();
     BasicDBObject query = new BasicDBObject("email", useremail);
@@ -166,8 +160,16 @@ public class Application {
     try {
     		if(cursor.hasNext())
     		{	GetUser getUser = new GetUser(cursor);
+				ValidateUser valdateUser = new ValidateUser(cursor);
+				Boolean res = validateUser.isUserValid(password);
+				if(res)
+				{
     			model.addAttribute("getUser", getUser);
     			return "homepage";
+				else
+				{
+				return "nosuchuser";
+				}
     		}
     		else{
     		return "nosuchuser";
@@ -176,10 +178,10 @@ public class Application {
     finally{cursor.close();}
  }
 
-	// Update User Details
- @RequestMapping(value ="/users/update", method = RequestMethod.POST)
- public String updateUserDetails(@Valid @ModelAttribute("updateUser") UpdateUser updateUser,Model model) throws UnknownHostException
- {
+// Update User Details
+@RequestMapping(value ="/users/update", method = RequestMethod.POST)
+public String updateUserDetails(@Valid @ModelAttribute("updateUser") UpdateUser updateUser,Model model) throws UnknownHostException
+{
      model.addAttribute("updateUser", updateUser);
      coll =  DBConnection.getConnection();
      BasicDBObject query = new BasicDBObject("userid", updateUser.userid);
@@ -214,11 +216,9 @@ public class Application {
  }
 	 
 	 
-	 //Deleting user
- @RequestMapping(value ="/users/deleteuser", method = RequestMethod.POST)
- public String deleteUser(@RequestParam String userid)
-
-         throws UnknownHostException
+//Deleting user
+@RequestMapping(value ="/users/deleteuser", method = RequestMethod.POST)
+public String deleteUser(@RequestParam String userid)throws UnknownHostException
  {
      coll =  DBConnection.getConnection();
      BasicDBObject query = new BasicDBObject("userid", userid);
@@ -238,12 +238,12 @@ public class Application {
      finally{cursor.close();}
  }
 	 
-	 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-	 //getAuthorizationUrl
-	 @RequestMapping(value="users/{userid}/authorizationUrl", method = RequestMethod.GET)
-	 @ResponseBody
-	 public ResponseEntity<Object> getAuthorizationUrl(@PathVariable String userid) throws UnknownHostException
-	 {
+//$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+//getAuthorizationUrl
+@RequestMapping(value="users/{userid}/authorizationUrl", method = RequestMethod.GET)
+@ResponseBody
+public ResponseEntity<Object> getAuthorizationUrl(@PathVariable String userid) throws UnknownHostException
+{
 		 coll =  DBConnection.getConnection();
 		    BasicDBObject query = new BasicDBObject("userid", userid);
 		    DBCursor cursor = coll.find(query);
@@ -257,14 +257,14 @@ public class Application {
 		    		}
 		    	}
 		    finally{cursor.close();}
-	 }
+}
 	 
 	 
-	 //Authorize User for Dropbox
-	 @RequestMapping(value="users/{userid}/authorizationCode/{authorizationCode}", method = RequestMethod.GET)
-	 @ResponseBody
-	 public ResponseEntity<Object> authorizeUser(@PathVariable String userid, @PathVariable String authorizationCode) throws UnknownHostException
-	 {
+//Authorize User for Dropbox
+@RequestMapping(value="users/{userid}/authorizationCode/{authorizationCode}", method = RequestMethod.GET)
+@ResponseBody
+public ResponseEntity<Object> authorizeUser(@PathVariable String userid, @PathVariable String authorizationCode) throws UnknownHostException
+{
 		 coll =  DBConnection.getConnection();
 		 BasicDBObject query = new BasicDBObject("userid", userid);
 		 DBCursor cursor = coll.find(query);
@@ -314,15 +314,15 @@ public class Application {
 	    	{
 	    		cursor.close();
 	    	}
-	 }
+}
 	 
-	 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+//$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 	 
-	 //Create StickyNote
-	 @RequestMapping(value ="/users/{userid}/note", method = RequestMethod.POST)
-	 @ResponseBody
-	 public ResponseEntity<Object> createNote(@PathVariable String userid, @Valid @RequestBody CreateNote createNote) throws UnknownHostException, DbxException
-	 {
+//Create StickyNote
+@RequestMapping(value ="/users/{userid}/note", method = RequestMethod.POST)
+@ResponseBody
+public ResponseEntity<Object> createNote(@PathVariable String userid, @Valid @RequestBody CreateNote createNote) throws UnknownHostException, DbxException
+{
 		 System.out.println("in create note method");
 	    coll =  DBConnection.getConnection();
 	    BasicDBObject query = new BasicDBObject("userid", userid);
@@ -363,19 +363,13 @@ public class Application {
 	    	{
 	    		cursor.close();
 	    	}
-	 }
+}
 	 
-		 
-	 
-	
-	 
-	 
-	 
-	//get particular note 
-	@RequestMapping(value ="/users/{userid}/note/{file_name}", method = RequestMethod.GET)
-	@ResponseBody
-	public ResponseEntity<Object> getNote(@PathVariable String userid, @PathVariable String file_name) throws IOException, UnknownHostException
-	{
+//get particular note 
+@RequestMapping(value ="/users/{userid}/note/{file_name}", method = RequestMethod.GET)
+@ResponseBody
+public ResponseEntity<Object> getNote(@PathVariable String userid, @PathVariable String file_name) throws IOException, UnknownHostException
+{
 		  coll =  DBConnection.getConnection();
 		  BasicDBObject query = new BasicDBObject("userid", userid);
 		  DBCursor cursor = coll.find(query);
@@ -422,38 +416,13 @@ public class Application {
 		   }
 		   finally
 		   {cursor.close();}
-	}
-	
-		
-		 
-		 
-		 
-		 
-		 
-		 
-		 
-		 
-		 
-		 
-		 
-		 
-		 
-		 
-		 
-		 
-		 
-		 
-		 
-		 
-		 
-		 
-		 
-		 
-	//Update note 
-	@RequestMapping(value ="/users/{userid}/note/{file_name}", method = RequestMethod.PUT)
-	@ResponseBody
-	public ResponseEntity<Object> updateNote(@PathVariable String userid, @PathVariable String file_name, @RequestBody UpdateNote updateNote) throws IOException, UnknownHostException, DbxException
-		{
+}
+
+//Update note 
+@RequestMapping(value ="/users/{userid}/note/{file_name}", method = RequestMethod.PUT)
+@ResponseBody
+public ResponseEntity<Object> updateNote(@PathVariable String userid, @PathVariable String file_name, @RequestBody UpdateNote updateNote) throws IOException, UnknownHostException, DbxException
+	{
 			coll =  DBConnection.getConnection();
 			BasicDBObject query = new BasicDBObject("userid", userid);
 			DBCursor cursor = coll.find(query);
@@ -500,15 +469,15 @@ public class Application {
 		}
 		
 	
-	//GetallNotes
-	@RequestMapping(value ="/users/{userid}/allnotes", method = RequestMethod.GET)
-	 @ResponseBody
-	 public ResponseEntity<Object> getAllNotes(@PathVariable String userid) throws UnknownHostException
-	 {
-	    coll =  DBConnection.getConnection();
-	    BasicDBObject query = new BasicDBObject("userid", userid);
-	    DBCursor cursor = coll.find(query);
-	    try {
+//GetallNotes
+@RequestMapping(value ="/users/{userid}/allnotes", method = RequestMethod.GET)
+@ResponseBody
+public ResponseEntity<Object> getAllNotes(@PathVariable String userid) throws UnknownHostException
+{
+	coll =  DBConnection.getConnection();
+	BasicDBObject query = new BasicDBObject("userid", userid);
+	DBCursor cursor = coll.find(query);
+	   try {
 	    		if(cursor.hasNext())
 	    		{	GetAllNotes notes = new GetAllNotes();
 	    			return new ResponseEntity<Object>(notes.getNotesList(cursor), HttpStatus.OK);
@@ -518,18 +487,18 @@ public class Application {
 	    		}
 	    	}
 	    finally{cursor.close();}
-	 }
+}
 	
 	
-	//Delete note 
-	@RequestMapping(value ="/users/{userid}/note/{file_name}", method = RequestMethod.DELETE)
-	@ResponseBody
-	public ResponseEntity<Object> deleteNote(@PathVariable String userid, @PathVariable String file_name) throws IOException, UnknownHostException
-		{
-			coll =  DBConnection.getConnection();
-			BasicDBObject query = new BasicDBObject("userid", userid);
-			DBCursor cursor = coll.find(query);
-			try{
+//Delete note 
+@RequestMapping(value ="/users/{userid}/note/{file_name}", method = RequestMethod.DELETE)
+@ResponseBody
+public ResponseEntity<Object> deleteNote(@PathVariable String userid, @PathVariable String file_name) throws IOException, UnknownHostException
+	{
+		coll =  DBConnection.getConnection();
+		BasicDBObject query = new BasicDBObject("userid", userid);
+		DBCursor cursor = coll.find(query);
+		try{
 			 if(cursor.hasNext())
 		     {	
 				if(!(clientDropboxInfo.containsKey(userid)))
@@ -559,18 +528,18 @@ public class Application {
 			{
 				return new ResponseEntity<Object>(new Error(userid), HttpStatus.BAD_REQUEST);
 			}
-			}
-			finally
-			{cursor.close();}
 		}
+		finally
+		{cursor.close();}
+	}
 	
 			
 	
-	 //handling exceptions
-	 @ExceptionHandler({MethodArgumentNotValidException.class, ServletRequestBindingException.class})
-	 @ResponseStatus(HttpStatus.BAD_REQUEST)
-	 public ModelMap exceptionHandler(MethodArgumentNotValidException error)
-	 {
+//handling exceptions
+@ExceptionHandler({MethodArgumentNotValidException.class, ServletRequestBindingException.class})
+@ResponseStatus(HttpStatus.BAD_REQUEST)
+public ModelMap exceptionHandler(MethodArgumentNotValidException error)
+{
 		List<FieldError> errors = error.getBindingResult().getFieldErrors();
 		ModelMap errorMapping = new ModelMap();
 		int error_count =1;
@@ -580,7 +549,8 @@ public class Application {
 			error_count++;
 		}
 		return errorMapping;
-     }
+}
+	
 	//twilio
 	 @RequestMapping(value= "/sendTextMessage", method = RequestMethod.POST)
 	 @ResponseBody
