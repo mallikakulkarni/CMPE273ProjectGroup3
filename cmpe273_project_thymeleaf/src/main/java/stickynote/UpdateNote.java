@@ -14,6 +14,9 @@ import com.dropbox.core.DbxClient;
 import com.dropbox.core.DbxEntry;
 import com.dropbox.core.DbxException;
 import com.dropbox.core.DbxWriteMode;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBCollection;
+import com.mongodb.DBObject;
 
 public class UpdateNote {
 	
@@ -67,10 +70,6 @@ public class UpdateNote {
 	public String updateFile(String userid, DbxClient client, String file_name) throws DbxException {
 		
 		this.setUserid(userid);
-		
-		// CREATE TIME WILL COME FROM DB
-		
-		
 		try{
 		File fileDir = new File("./UserNote/"+userid);
 		if(!(fileDir.exists()))
@@ -101,6 +100,7 @@ public class UpdateNote {
 		        try {
 		            DbxEntry.File uploadedFile = client.uploadFile("/"+file_name+".doc",
 		                DbxWriteMode.add(), inputFile.length(), inputStream);
+		            updateDbMetadata(userid,file_name);
 		            
 		        } finally {
 		            inputStream.close();
@@ -114,5 +114,20 @@ public class UpdateNote {
 		}
 		
 	}		
+	
+	
+	public void updateDbMetadata(String userid,String file_name) throws java.net.UnknownHostException
+	{
+		DBCollection coll;
+		coll =  DBConnection.getConnection();
+		TimeZone tz = TimeZone.getTimeZone("UTC");
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T':HH:mm:ss'Z'");
+		df.setTimeZone(tz);
+		DBObject query = new BasicDBObject().append("userid", userid).append("notes.filename", file_name);
+		DBObject update = new BasicDBObject();
+		update.put("$set", new BasicDBObject("notes.$.updated_time",df.format(new Date())));
+		coll.update(query, update);
+	}	
+
 
 }
