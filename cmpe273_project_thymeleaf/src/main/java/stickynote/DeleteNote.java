@@ -1,8 +1,11 @@
 package stickynote;
 
 import java.io.File;
+import java.net.UnknownHostException;
 
 import com.dropbox.core.DbxClient;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBCollection;
 
 public class DeleteNote {
 
@@ -18,6 +21,18 @@ public class DeleteNote {
 		{
 			return e.getMessage();
 		}
+	}
+
+	public void deleteNoteMetaDataDb(String userid,String file_name) throws UnknownHostException
+	{
+		DBCollection coll =  DBConnection.getConnection();
+		BasicDBObject query = new BasicDBObject();
+		query.put("userid", userid);
+		 BasicDBObject delNote = new BasicDBObject();
+		 delNote.put("filename", file_name);
+		 BasicDBObject remove = new BasicDBObject();
+		 remove.put("$pull", new BasicDBObject("notes",delNote));
+		 coll.update(query,remove);
 	}
 
 	

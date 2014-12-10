@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="bg-black">
+<html xmlns:th="http://www.thymeleaf.org" class="bg-black">
     <head>
         
         <title>AdminLTE | Registration Page</title>
@@ -68,6 +68,7 @@
     <body class="bg-black">
 		
         <div class="form-box" id="login-box">
+            <h4>User Already Exists. You can login <a th:href="@{http://localhost:8080/stickynote}">Here</a></h4>
             <div class="header">Register New Membership</div>
             <form action="#" name="myForm" onsubmit="return validateForm()" th:action="@{http://localhost:8080/stickynote/users}" th:object="${createuser}" method="post">
                 <div class="body bg-gray">
