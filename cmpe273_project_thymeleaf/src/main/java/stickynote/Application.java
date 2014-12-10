@@ -553,7 +553,7 @@ public ModelMap exceptionHandler(MethodArgumentNotValidException error)
 }
 	
 	//twilio
-	 @RequestMapping(value= "/sendTextMessage", method = RequestMethod.POST)
+	 @RequestMapping(value= "/users/sendTextMessage", method = RequestMethod.POST)
 	 @ResponseBody
 	 public ResponseEntity<Object> sendTextMessage(@Valid @RequestBody SendMessage message) throws UnknownHostException
 	 {
@@ -569,7 +569,7 @@ public ModelMap exceptionHandler(MethodArgumentNotValidException error)
 	  
 
 	  //Send email message
-	 @RequestMapping(value= "/sendEmail", method = RequestMethod.POST)
+	 @RequestMapping(value= "/users/sendEmail", method = RequestMethod.POST)
 	 @ResponseBody
 	 public ResponseEntity<Object> sendEmail(@Valid @RequestBody SendMessage message) throws UnknownHostException
 	 {
