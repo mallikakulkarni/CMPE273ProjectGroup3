@@ -113,7 +113,7 @@ public String getSettings(@RequestParam String userid, Model model) throws Unkno
          if (cursor.hasNext()) {
              GetUser getUser = new GetUser(cursor);
              model.addAttribute("getUser", getUser);
-             return "settings2";
+             return "settings";
          } else {
              return "nosuchuser";
          }
