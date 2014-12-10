@@ -164,8 +164,9 @@ public String getUser(@RequestParam String useremail, @RequestParam String passw
 				Boolean res = validateUser.isUserValid(password);
 				if(res)
 				{
-    			model.addAttribute("getUser", getUser);
-    			return "homepage";
+    				model.addAttribute("getUser", getUser);
+    				return "homepage";
+				}
 				else
 				{
 				return "nosuchuser";
