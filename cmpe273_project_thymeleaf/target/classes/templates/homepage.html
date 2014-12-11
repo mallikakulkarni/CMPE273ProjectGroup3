@@ -31,7 +31,7 @@
     <body class="skin-blue">
         <!-- header logo: style can be found in header.less -->
         <header class="header">
-            <a href="index.html" class="logo">
+            <a th:href="@{./homepage(useremail=${getUser.email},password=${getUser.password})}" class="logo">
                 <!-- Add the class icon to your logo image or logo icon to add the margining -->
                 Sticky Notes
             </a>
@@ -52,7 +52,7 @@
                         <li class="dropdown user user-menu">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                 <i class="glyphicon glyphicon-user"></i>
-                                 <span><p th:text="${getUser.name}"/><i class="caret"></i></span>
+                                 <span th:text="${getUser.name}"></span>
                             </a>
                             <ul class="dropdown-menu">
                          
@@ -60,10 +60,10 @@
                                 <!-- Menu Footer-->
                                 <li class="user-footer">
                                     <div class="pull-left">
-                                        <a th:href="@{./settings(userid=${getUser.userid})}" class="btn btn-default btn-flat">Profile</a>
+                                        <a th:href="@{./settings(userid=${getUser.userid})}" class="btn btn-default btn-flat">Settings</a>
                                     </div>
                                     <div class="pull-right">
-                                        <a href="#" class="btn btn-default btn-flat">Sign out</a>
+                                        <a href="/stickynote/logout" class="btn btn-default btn-flat">Sign out</a>
                                     </div>
                                 </li>
                             </ul>
@@ -83,7 +83,7 @@
                             <img src="../../img/avatar3.png" class="img-circle" alt="User Image" />
                         </div>
                         <div class="pull-left info">
-                            <p th:text="'Hello' + ${getUser.name}" />
+                            <p th:text="'Hello, ' + ${getUser.name}" />
 
                             <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
                         </div>
@@ -98,36 +98,7 @@
                             </a>
                         </li>
                 
-                        <li class="treeview">
-                            <a href="#">
-                                <i class="fa fa-laptop"></i>
-                                <span>Send Reminder Email</span>
-                                <i class="fa fa-angle-left pull-right"></i>
-                            </a>
-                            <ul class="treeview-menu">
-                                <li><a href="pages/UI/general.html"><i class="fa fa-angle-double-right"></i> General</a></li>
-                                <li><a href="pages/UI/icons.html"><i class="fa fa-angle-double-right"></i> Icons</a></li>
-                                <li><a href="pages/UI/buttons.html"><i class="fa fa-angle-double-right"></i> Buttons</a></li>
-                                <li><a href="pages/UI/sliders.html"><i class="fa fa-angle-double-right"></i> Sliders</a></li>
-                                <li><a href="pages/UI/timeline.html"><i class="fa fa-angle-double-right"></i> Timeline</a></li>
-                            </ul>
-                        </li>
-                        <li class="treeview">
-                            <a href="#">
-                                <i class="fa fa-laptop"></i>
-                                <span>Send Reminder Message</span>
-                                <i class="fa fa-angle-left pull-right"></i>
-                            </a>
-                            <ul class="treeview-menu">
-                                <li><a href="pages/UI/general.html"><i class="fa fa-angle-double-right"></i> General</a></li>
-                                <li><a href="pages/UI/icons.html"><i class="fa fa-angle-double-right"></i> Icons</a></li>
-                                <li><a href="pages/UI/buttons.html"><i class="fa fa-angle-double-right"></i> Buttons</a></li>
-                                <li><a href="pages/UI/sliders.html"><i class="fa fa-angle-double-right"></i> Sliders</a></li>
-                                <li><a href="pages/UI/timeline.html"><i class="fa fa-angle-double-right"></i> Timeline</a></li>
-                            </ul>
-                        </li>
-                  
-                
+                       
                         
                     </ul>
                 </section>
@@ -154,7 +125,7 @@
                                         <!-- textarea -->
                                         <div class="form-group">
                                             
-                                            <textarea id = "note_text_area" class="form-control" rows="3" placeholder="Enter Note"></textarea>
+                                            <textarea id = "note_text_area" class="form-control" rows="6" placeholder="Enter Note"></textarea>
                                         </div>
                      </div>
                      </div>
@@ -429,7 +400,7 @@
         
         function sendnoteemail() {
 
-            var title = $('#note_title').val() + "\n" + $('#note_text_area').val();
+            var title = $('#note_title').val();
             var json = { "title" : title};
             $.ajax({
                 url: "./sendEmail",
@@ -442,7 +413,7 @@
                 },
                 success: function(responsentity) {
                 	
-                	displaysuccess("Sticky Note " + file_name + " emailed!");
+                	displaysuccess("Sticky Note emailed!");
                 	
           
                 },
@@ -458,7 +429,7 @@
         function sendnotetext() {
 
         	//var title = $('#note_title').val() + "\n" + $('#note_text_area').val();
-            var title = "test title";
+            var title =  $('#note_title').val();
         	var json = {"title" : title};
             $.ajax({
                 url: "./sendTextMessage",
@@ -471,7 +442,7 @@
                 },
                 success: function(responsentity) {
                 	
-                	displaysuccess("Sticky Note " + file_name + " sent as text!");
+                	displaysuccess("Sticky Note sent as text!");
                 	
           
                 },
@@ -508,7 +479,8 @@
         	 /*<![CDATA[*/
         	            //responsentity[0].file_name+
         	for (var i = 0; i<responsentity.length; i++) {
-        		addnotehtml(responsentity[i].file_name.trim().replace(/\s+/g,'_'),responsentity[i].file_name);
+        		if(responsentity[i].file_name!="")
+        			addnotehtml(responsentity[i].file_name.trim().replace(/\s+/g,'_'),responsentity[i].file_name);
         		}
         	/*]]>*/
         }
@@ -520,9 +492,9 @@
             $("#error_text").text(success);
         }
         
-        function addnotehtml(titleID,title) {
+         function addnotehtml(titleID,title) {
         	
-        	$("#notes_main_div").append('<div class="col-lg-3 col-xs-6" id = "' + titleID + '"><div class="small-box bg-yellow"><div class="inner"><p>' + title +'</p></div><div class="small-box-footer">View/Edit<a class="fa fa-fw fa-edit" onclick = "viewenoteajax(this)"></a> Delete<a class="fa fa-fw fa-trash-o" onclick = "deletenoteajax(this)"></a></div></div></div>');
+        	$("#notes_main_div").append('<div class="col-lg-3 col-xs-6" id = "' + titleID + '"><div class="small-box"  style="background-image: url(../../img/stickynote.png); width: 175px; height: 182px"><div class="inner" style="position:absolute;top:15px;"><p>' + title +'</p></div><div style="position:absolute;left:23px;bottom:20px;">View/Edit<a class="fa fa-fw fa-edit" onclick = "viewenoteajax(this)"></a> Delete<a class="fa fa-fw fa-trash-o" onclick = "deletenoteajax(this)"></a></div></div></div>');
         	//$("#notes_main_div").append('<div class="col-lg-3 col-xs-6" id = "' + titleID + '"><div class="small-box bg-yellow"><div class="inner"><p>' + title +'</p></div><div class="small-box-footer">View/Edit<a class="fa fa-fw fa-edit" onclick = "viewenoteajax(this)"></a>  Delete<a class="fa fa-fw fa-trash-o" onclick = "deletenoteajax(this)"></a></div></div><div class="small-box bg-yellow"><div class="inner"><p>' + title +'</p></div><div class="small-box-footer">Send Text<a class="fa fa-fw fa-mobile"></a>  Send email<a class="fa fa-fw fa-envelope-o" ></a></div></div></div>');
         }
         

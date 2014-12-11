@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="bg-black">
+<html xmlns:th="http://www.thymeleaf.org" class="bg-black">
     <head>
         
         <title>AdminLTE | Registration Page</title>
@@ -23,8 +23,6 @@
             var x = document.forms["myForm"]["email"].value;
             var y = document.forms["myForm"]["password"].value;
             var z = document.forms["myForm"]["name"].value;
-            var c = document.forms["myForm"]["contactNumber"].value;
-
 
 
             if (x == null || x == "") {
@@ -40,10 +38,6 @@
             
             if (y == null || y == "") {
                 alert("Password must be filled out");
-                return false;
-            }
-            if (c == null || c == "") {
-                alert("Contact must be filled out");
                 return false;
             }
         }
@@ -74,6 +68,7 @@
     <body class="bg-black">
 		
         <div class="form-box" id="login-box">
+            <h4>User Already Exists. You can login <a th:href="@{/stickynote}">Here</a></h4>
             <div class="header">Register New Membership</div>
             <form action="#" name="myForm" onsubmit="return validateForm()" th:action="@{/stickynote/users}" th:object="${createuser}" method="post">
                 <div class="body bg-gray">

@@ -13,3 +13,4 @@ public class GetNoNotes extends GetAllNotes{
 		this.message = message;
 	}
 }
+

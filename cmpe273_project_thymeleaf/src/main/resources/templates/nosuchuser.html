@@ -1,24 +1,78 @@
-<!DOCTYPE html>
+<!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
-<head lang="en">
+<head>
+    <title>Welcom to stickynotes</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link rel="stylesheet" href="../../css/style.css" th:href="@{/css/style.css}"/>
-    <title></title>
-</head>
-<body>
-<p>The credentials you entered are not valid. Please check your username or password or<a href="/stickynote/register">register here</a></p>
-<section class="container">
-    <div class="login">
-        <h1>Sticky Notes</h1>
-        <form name="indexform" action="#" th:action="@{http://localhost:8080/stickynote/users/document.indexform.useremail/}" method="get">
-            <p><input type="text" name="useremail" id="email" placeholder="Username or Email" /></p>
-            <p><input type="password" name="password" id="password" placeholder="Password" /></p>
+        <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />    
+    	        <link href="../../css/AdminLTE.css" rel="stylesheet" type="text/css" />
+    	
+    <script>
+    function validateForm() {
+    	console.log("in function");
+    	
+        var x = document.forms["myForm"]["useremail"].value;
+        var y = document.forms["myForm"]["password"].value;
 
-            <p class="submit"><input type="submit" id="submit" value="Login" /></p>
-            <p class="reset"><input type="reset" name="reset" value="reset" /></p>
+        if (x == null || x == "") {
+            alert("Email must be filled out");
+            return false;
+        }
+        
+        if (y == null || y == "") {
+            alert("Password must be filled out");
+            return false;
+        }
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+   </script>
+    
+    
+    </head>
+<body class="bg-black">
 
-        </form>
-    </div>
-</section>
-</body>
+        <div class="form-box" id="login-box">
+      <h4>The Credentials Entered were invalid. Please check your username and Password</h4>
+      
+            <div class="header">Sign In</div>
+             <form action="#" name="myForm" onsubmit="return validateForm()" th:action="@{/stickynote/users/homepage}" method="get">
+                <div class="body bg-gray">
+                    <div class="form-group">
+                        <input type="text" name="useremail" class="form-control" placeholder="Email"/>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" name="password" class="form-control" placeholder="Password"/>
+                    </div>          
+                    <div class="form-group">
+                        <input type="checkbox" name="remember_me"/> Remember me
+                    </div>
+                </div>
+                <div class="footer">                                                               
+                    <input type="submit" class="btn bg-olive btn-block" value="Sign me in"></input>  
+                    
+                    <p><a href="#">I forgot my password</a></p>
+                    
+                    <a href="/stickynote/register" class="text-center">Register a new membership</a>
+                </div>
+            </form>
+
+            <div class="margin text-center">
+               
+
+            </div>
+            
+        </div>
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+        <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js" type="text/javascript"></script>
+
+    </body>
 </html>

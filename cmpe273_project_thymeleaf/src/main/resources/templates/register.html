@@ -23,6 +23,8 @@
             var x = document.forms["myForm"]["email"].value;
             var y = document.forms["myForm"]["password"].value;
             var z = document.forms["myForm"]["name"].value;
+            var c = document.forms["myForm"]["contactNumber"].value;
+
 
 
             if (x == null || x == "") {
@@ -38,6 +40,10 @@
             
             if (y == null || y == "") {
                 alert("Password must be filled out");
+                return false;
+            }
+            if (c == null || c == "") {
+                alert("Contact must be filled out");
                 return false;
             }
         }
@@ -69,7 +75,7 @@
 		
         <div class="form-box" id="login-box">
             <div class="header">Register New Membership</div>
-            <form action="#" name="myForm" onsubmit="return validateForm()" th:action="@{http://localhost:8080/stickynote/users}" th:object="${createuser}" method="post">
+            <form action="#" name="myForm" onsubmit="return validateForm()" th:action="@{/stickynote/users}" th:object="${createuser}" method="post">
                 <div class="body bg-gray">
                     <div class="form-group">
                     <p><input type="text" name="email" th:field="*{email}" placeholder="Username or Email" class="form-control"/></p>         

@@ -26,7 +26,7 @@ public class ValidateUser {
 		this.setContactNumber(obj.get("contactNumber").toString());
 	}
 	
-	public Boolean isUserValid(String pass)
+	public boolean isUserValid(String pass)
 	{
 		if(pass.equals(this.password))
 		{

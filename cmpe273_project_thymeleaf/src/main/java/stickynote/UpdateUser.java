@@ -7,14 +7,14 @@ import org.hibernate.validator.constraints.NotEmpty;
 public class UpdateUser {
 	
 	String userid="";
-	@NotEmpty (message = "Please enter name")
+	//@NotEmpty (message = "Please enter name")
 	String name="";
-	@Email (message = "Email format is not valid")
-	@NotEmpty (message = "Please enter email id")
+	//@Email (message = "Email format is not valid")
+	//@NotEmpty (message = "Please enter email id")
 	String email="";
-	@NotEmpty (message = "Please enter contact number") 
+	//@NotEmpty (message = "Please enter contact number") 
 	String contactNumber = "";
-	@NotEmpty (message = "Please enter password") 
+	//@NotEmpty (message = "Please enter password") 
 	String password="";
 	
 	
