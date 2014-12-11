@@ -31,7 +31,7 @@
     <body class="skin-blue">
         <!-- header logo: style can be found in header.less -->
         <header class="header">
-            <a href="index.html" class="logo">
+            <a th:href="@{./homepage(useremail=${getUser.email},password=${getUser.password})}" class="logo">
                 <!-- Add the class icon to your logo image or logo icon to add the margining -->
                 Sticky Notes
             </a>
@@ -63,7 +63,7 @@
                                         <a th:href="@{./settings(userid=${getUser.userid})}" class="btn btn-default btn-flat">Settings</a>
                                     </div>
                                     <div class="pull-right">
-                                        <a href="#" class="btn btn-default btn-flat">Sign out</a>
+                                        <a href="/stickynote/logout" class="btn btn-default btn-flat">Sign out</a>
                                     </div>
                                 </li>
                             </ul>
@@ -125,7 +125,7 @@
                                         <!-- textarea -->
                                         <div class="form-group">
                                             
-                                            <textarea id = "note_text_area" class="form-control" rows="3" placeholder="Enter Note"></textarea>
+                                            <textarea id = "note_text_area" class="form-control" rows="6" placeholder="Enter Note"></textarea>
                                         </div>
                      </div>
                      </div>
@@ -492,9 +492,9 @@
             $("#error_text").text(success);
         }
         
-        function addnotehtml(titleID,title) {
+         function addnotehtml(titleID,title) {
         	
-        	$("#notes_main_div").append('<div class="col-lg-3 col-xs-6" id = "' + titleID + '"><div class="small-box bg-yellow"><div class="inner"><p>' + title +'</p></div><div class="small-box-footer">View/Edit<a class="fa fa-fw fa-edit" onclick = "viewenoteajax(this)"></a> Delete<a class="fa fa-fw fa-trash-o" onclick = "deletenoteajax(this)"></a></div></div></div>');
+        	$("#notes_main_div").append('<div class="col-lg-3 col-xs-6" id = "' + titleID + '"><div class="small-box"  style="background-image: url(../../img/stickynote.png); width: 175px; height: 182px"><div class="inner" style="position:absolute;top:15px;"><p>' + title +'</p></div><div style="position:absolute;left:23px;bottom:20px;">View/Edit<a class="fa fa-fw fa-edit" onclick = "viewenoteajax(this)"></a> Delete<a class="fa fa-fw fa-trash-o" onclick = "deletenoteajax(this)"></a></div></div></div>');
         	//$("#notes_main_div").append('<div class="col-lg-3 col-xs-6" id = "' + titleID + '"><div class="small-box bg-yellow"><div class="inner"><p>' + title +'</p></div><div class="small-box-footer">View/Edit<a class="fa fa-fw fa-edit" onclick = "viewenoteajax(this)"></a>  Delete<a class="fa fa-fw fa-trash-o" onclick = "deletenoteajax(this)"></a></div></div><div class="small-box bg-yellow"><div class="inner"><p>' + title +'</p></div><div class="small-box-footer">Send Text<a class="fa fa-fw fa-mobile"></a>  Send email<a class="fa fa-fw fa-envelope-o" ></a></div></div></div>');
         }
         

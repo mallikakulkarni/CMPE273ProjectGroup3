@@ -31,7 +31,7 @@
     <body class="skin-blue">
         <!-- header logo: style can be found in header.less -->
         <header class="header">
-            <a href="index.html" class="logo">
+            <a th:href="@{./homepage(useremail=${getUser.email},password=${getUser.password})}" class="logo">
                 <!-- Add the class icon to your logo image or logo icon to add the margining -->
                 Sticky Notes
             </a>
@@ -60,10 +60,10 @@
                                 <!-- Menu Footer-->
                                 <li class="user-footer">
                                     <div class="pull-left">
-                                        <a th:href="@{./settings(userid=${getUser.userid})}" class="btn btn-default btn-flat">HomePage</a>
+                                        <a th:href="@{./homepage(useremail=${getUser.email},password=${getUser.password})}" class="btn btn-default btn-flat">HomePage</a>
                                     </div>
                                     <div class="pull-right">
-                                        <a href="#" class="btn btn-default btn-flat">Sign out</a>
+                                        <a href="/stickynote/logout" class="btn btn-default btn-flat">Sign out</a>
                                     </div>
                                 </li>
                             </ul>
@@ -107,7 +107,7 @@
                         </li>
                          <li>
                             <a href="#" onclick ="deleteuser()">
-                                <i class="fa fa-th"></i> <span><td>Delete User</td></span> 
+                                <i class="fa fa-th"></i> <span><td>Delete Account</td></span> 
                             </a>
                         </li>
                        
@@ -134,19 +134,19 @@
                                     <h3 class="box-title">Edit User Details</h3>
                                 </div><!-- /.box-header -->
                                 <!-- form start -->
-                                <form role="form" action="#" th:action="@{http://localhost:8080/stickynote/users/update}" th:object="${updateUser}" method="post">
+                                <form role="form" action="#" th:action="@{/stickynote/users/update}" th:object="${updateUser}" method="post">
                                     <div class="box-body">
-                                        <div class="form-group">
+                                       <div class="form-group">
                                         <label for="exampleInputEmail1">Email address</label>
-                                        <p><input type="text" th:field="*{email}" placeholder="New Email" class="form-control" text="${getUser.userid}"/></p>
+                                        <p><input type="text" id="email" name="email" class="form-control" th:value="${getUser.email}"/></p>
                                         <label for="exampleInputEmail1">Name</label>
-                                        <p><input type="text" th:field="*{name}" placeholder="New Name" class="form-control"/></p>
+                                        <p><input type="text" id="name" name="name" placeholder="New Name" class="form-control" th:value="${getUser.name}"/></p>
                                         <label for="exampleInputEmail1">Number</label>
-                                        <p><input type="text" th:field="*{contactNumber}" placeholder="New Number" class="form-control"/></p>
-                                        <label for="exampleInputEmail1">User ID</label>
-                                        <p><input type="text" th:field="*{userid}" placeholder="New UserID" class="form-control"/></p>
+                                        <p><input type="text" id="contactNumber" name="contactNumber" placeholder="New Number" class="form-control" th:value="${getUser.contactNumber}"/></p>
+                                     
+                                        <p><input type="hidden" id="userid" name="userid" placeholder="New UserID"  class="form-control" th:value="${getUser.userid}"/></p>
                                         <label for="exampleInputEmail1">Password</label>
-                                        <p><input type="text" th:field="*{password}" placeholder="New password" class="form-control"/></p>
+                                        <p><input type="password" id="password" name="password" placeholder="New password" class="form-control" th:value="${getUser.password}"/></p>
                                         
                                         </div>
                                         
@@ -165,9 +165,7 @@
                                     <h3 class="box-title">Validate Dropbox</h3>
                                 </div>
                                 <div class="box-body">
-                                     <div class="form-group">
-                                        <button class="btn btn-primary" onclick = "validatedropbox()">Click to Validate</button>
-                                        </div>
+                                     
                                     <div class="input-group">
                                         <div class="input-group-btn">
                                             <button type="button" class="btn btn-danger" onclick = "validateurl()">Validate!</button>
@@ -253,7 +251,7 @@
         var count = 0;
         window.onload = function() {
         	
-        	$("#user_settings").hide();
+        	$("#dropbox_settings").hide();
         	$("#user_delete").hide();
         	
         	
@@ -263,6 +261,7 @@
         	$("#dropbox_settings").show();
         	$("#user_settings").hide();
         	$("#user_delete").hide();
+        	validatedropbox();
         }
         
         function loaduser() {

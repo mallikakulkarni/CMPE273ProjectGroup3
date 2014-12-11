@@ -7,11 +7,12 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.TimeZone;
 
 import org.hibernate.validator.constraints.NotEmpty;
@@ -20,6 +21,7 @@ import com.dropbox.core.DbxClient;
 import com.dropbox.core.DbxEntry;
 import com.dropbox.core.DbxException;
 import com.dropbox.core.DbxWriteMode;
+import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
@@ -55,10 +57,11 @@ public class CreateNote {
 		this.file_name = file_name;
 	}
 	
-	public String createFile(String userid,DbxClient client) throws DbxException
+	
+	public String createFile(String userid, DbxClient client, DBCursor cursor) throws DbxException, IOException
 	{
 		
-		try{
+		
 		File fileDir = new File("./UserNote/"+userid);
 		if(!(fileDir.exists()))
 		{
@@ -66,48 +69,70 @@ public class CreateNote {
 		}
 		
 		File file = new File("./UserNote/"+userid+"/"+file_name+".doc");
-		if(!(file.exists()))
+		
+		if(cursor.hasNext())
 		{
-			file.createNewFile();
-			FileWriter fw = new FileWriter(file.getAbsoluteFile());
-			BufferedWriter bw = new BufferedWriter(fw);
-			bw.write("Title: "+file_name);
-			bw.write("\n");
-			bw.write("============================================================================================================================");
-			bw.write("\n");
-			bw.write("\n");
-			bw.write(file_data);
-			bw.write("\n");
-			bw.write("\n");
-			bw.write("============================================================================================================================");
-			bw.close();
-			
-			  File inputFile = new File("./UserNote/"+userid+"/"+file_name+".doc");
-		       // inputFile.createNewFile();
-		        FileInputStream inputStream = new FileInputStream(inputFile);
-		        
-		        try {
-		            DbxEntry.File uploadedFile = client.uploadFile("/"+file_name+".doc",
-		                DbxWriteMode.add(), inputFile.length(), inputStream);
-		            createDbMetadata(userid,file_name);
-		            
-		        } finally {
-		            inputStream.close();
-		        }
-		        
-			return "created";
+			BasicDBObject query1 = (BasicDBObject) cursor.next();
+    		try{
+    			BasicDBList dblist = (BasicDBList) query1.get("notes");
+				if(dblist.toString().contains(this.getFile_name()))
+				{
+					return "file already exists";
+				}
+				else
+				{
+					file.createNewFile();
+					FileWriter fw = new FileWriter(file.getAbsoluteFile());
+					BufferedWriter bw = new BufferedWriter(fw);
+					bw.write(file_data);
+					bw.close();
+					
+					  File inputFile = new File("./UserNote/"+userid+"/"+file_name+".doc");
+				       // inputFile.createNewFile();
+				        FileInputStream inputStream = new FileInputStream(inputFile);
+				        
+				        try {
+				            DbxEntry.File uploadedFile = client.uploadFile("/"+file_name+".doc",
+				                DbxWriteMode.add(), inputFile.length(), inputStream);
+				            createDbMetadata(userid,file_name);
+				            
+				        } finally {
+				            inputStream.close();
+				        }
+				        
+					return "created";
+				}
+				}
+    		
+    		catch(Exception e)
+    		{
+    			file.createNewFile();
+				FileWriter fw = new FileWriter(file.getAbsoluteFile());
+				BufferedWriter bw = new BufferedWriter(fw);
+				bw.write(file_data);
+				bw.close();
+				
+				  File inputFile = new File("./UserNote/"+userid+"/"+file_name+".doc");
+			       // inputFile.createNewFile();
+			        FileInputStream inputStream = new FileInputStream(inputFile);
+			        
+			        try {
+			            DbxEntry.File uploadedFile = client.uploadFile("/"+file_name+".doc",
+			                DbxWriteMode.add(), inputFile.length(), inputStream);
+			            createDbMetadata(userid,file_name);
+			            
+			        } finally {
+			            inputStream.close();
+			        }
+			   return "created";
+    		 }
 		}
 		else
 		{
-			return "file already exist";}
+			return "user does not exist";
 		}
-		catch(IOException e)
-		{
-			return e.toString();
-		}
-		
+			
 	}
-	
 	
 	
 	public void createDbMetadata(String userid,String file_name) throws UnknownHostException
@@ -128,22 +153,32 @@ public class CreateNote {
 		 
 		 if(isNotFirstFile)
 		 {
-			 System.out.println("Not first File for user :"+userid);
+			 //System.out.println("Not first File for user :"+userid);
 			 BasicDBObject userNotes = new BasicDBObject()
 			 .append("notes", newNote);
 			 DBObject updateQuery = new BasicDBObject("$push", userNotes);
 			 coll.update(basicQuery, updateQuery);
+			 File file = new File("./UserNote/"+userid+"/"+file_name+".doc");
+			 if(file.exists())
+	  		 {
+	  			file.delete();
+	  		 }
 		 }
 		 
 		 else
 		 {
-			  System.out.println("is first note");
+			  //System.out.println("is first note");
 			  List<BasicDBObject> dbObjList = new ArrayList<BasicDBObject>();
 			  dbObjList.add(newNote);
 			  basicQuery.put("notes",dbObjList);
 			  coll.insert(basicQuery);
-		 }
-		 System.out.println("Inserting the note info in the DB");
+			  File file = new File("./UserNote/"+userid+"/"+file_name+".doc");
+			  if(file.exists())
+  			{
+  				file.delete();
+  			}
+		}
+		// System.out.println("Inserting the note info in the DB");
 		
 	}
 

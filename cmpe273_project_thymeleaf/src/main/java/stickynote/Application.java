@@ -141,7 +141,7 @@ public String getSettings(@RequestParam String userid, Model model) throws Unkno
              doc = new BasicDBObject("userid", createuser.getUserid()).append("name",createuser.getName()).append("email", createuser.getEmail()).append("contactNumber", createuser.getContactNumber()).append("password", createuser.getPassword()).append("created_at", createuser.getCreated_at());
              coll.insert(doc);
              System.out.println("inserted");
-             return "get";			 	}
+             return "RegistrationSuccesful";			 	}
      }
      finally {cursor.close();}
 
@@ -161,13 +161,8 @@ public String getUser(@RequestParam String useremail, @RequestParam String passw
     try {
     		if(cursor.hasNext())
     		{	
-    			System.out.println("in loop");
     			GetUser getUser = new GetUser(cursor);
-    			
     			System.out.println(getUser.password);
-				//ValidateUser validateUser = new ValidateUser(cursor);
-				System.out.println("##########"+password);
-				//boolean res = validateUser.isUserValid(password);
 				if(getUser.password.equals(password))
 				{
     				model.addAttribute("getUser", getUser);
@@ -346,7 +341,7 @@ public ResponseEntity<Object> createNote(@PathVariable String userid, @Valid @Re
 	    				 createNote.setUserid(userid);
 	    				 client = (DbxClient)clientDropboxInfo.get(userid);
 	    				 
-		    			 String response = createNote.createFile(userid,client);
+		    			 String response = createNote.createFile(userid,client,cursor);
 		    			 if(response.equals("created"))
 		    			 {	
 		    				 return new ResponseEntity<Object>(createNote, HttpStatus.CREATED);
@@ -501,7 +496,7 @@ public ResponseEntity<Object> getAllNotes(@PathVariable String userid) throws Un
 @RequestMapping(value ="/users/{userid}/note/{file_name}", method = RequestMethod.DELETE)
 @ResponseBody
 public ResponseEntity<Object> deleteNote(@PathVariable String userid, @PathVariable String file_name) throws IOException, UnknownHostException
-	{
+{
 		coll =  DBConnection.getConnection();
 		BasicDBObject query = new BasicDBObject("userid", userid);
 		DBCursor cursor = coll.find(query);
@@ -538,7 +533,7 @@ public ResponseEntity<Object> deleteNote(@PathVariable String userid, @PathVaria
 		}
 		finally
 		{cursor.close();}
-	}
+}
 	
 			
 	
@@ -559,7 +554,7 @@ public ModelMap exceptionHandler(MethodArgumentNotValidException error)
 }
 	
 	//twilio
-	 @RequestMapping(value= "/sendTextMessage", method = RequestMethod.POST)
+	 @RequestMapping(value= "/users/sendTextMessage", method = RequestMethod.POST)
 	 @ResponseBody
 	 public ResponseEntity<Object> sendTextMessage(@Valid @RequestBody SendMessage message) throws UnknownHostException
 	 {
@@ -575,7 +570,7 @@ public ModelMap exceptionHandler(MethodArgumentNotValidException error)
 	  
 
 	  //Send email message
-	 @RequestMapping(value= "/sendEmail", method = RequestMethod.POST)
+	 @RequestMapping(value= "/users/sendEmail", method = RequestMethod.POST)
 	 @ResponseBody
 	 public ResponseEntity<Object> sendEmail(@Valid @RequestBody SendMessage message) throws UnknownHostException
 	 {
